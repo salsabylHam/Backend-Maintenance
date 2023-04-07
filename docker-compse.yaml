@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  maintenance:
+    container_name: maintenance
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:dev
+    ports:
+      - 4000:4000
+      - 9229:9229
+    networks:
+      - maintenance-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    image: mysql:latest
+    container_name: mysqldb
+    hostname: mysqldb
+    restart: always
+    environment:
+      MYSQL_DATABASE: maintenance_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_READ_BUFFER_SIZE: 4M
+      MYSQL_SORT_BUFFER_SIZE: 4M
+      MYSQL_KEY_BUFFER_SIZE: 64M
+      MYSQL_INNODB_BUFFER_POOL_SIZE: 64M
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./docker/data/mysqldb:/var/lib/mysql
+      - ./docker/logs/mysqldb:/var/log/mysql
+    networks:
+      - maintenance-network
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    depends_on:
+      - mysqldb
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: mysql
+      ADMINER_DEFAULT_DB_HOST: mysqldb
+      ADMINER_DEFAULT_DB_NAME: maintenance_db
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: tables-filter tinymce
+    ports:
+      - 8080:8080
+    networks:
+      - maintenance-network
+networks:
+  maintenance-network:
