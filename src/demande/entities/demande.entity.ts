@@ -39,8 +39,9 @@ export class Demande {
   @Column()
   createdAt: Date;
   @Column()
-  MachineId: number;
+  machineId: number;
   @ManyToOne(() => Machine, (machine) => machine.demandes)
+  @JoinColumn({ name: 'machineId' })
   machine: Machine;
   @Column()
   updatedAt: Date;
