@@ -8,6 +8,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -34,14 +36,24 @@ export class Demande {
   priority: string;
   @Column({ type: 'text' })
   note: string;
-  @ManyToOne(() => User, (user) => user.demandes)
-  createdBy: number;
   @Column()
+  userId: number;
+  @ManyToOne(() => User, (user) => user.demandes)
+  @JoinColumn({ name: 'userId' })
+  createdBy: User;
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdAt: Date;
   @Column()
   MachineId: number;
   @ManyToOne(() => Machine, (machine) => machine.demandes)
   machine: Machine;
-  @Column()
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   updatedAt: Date;
 }

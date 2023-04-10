@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDemandeDto } from './dto/create-demande.dto';
 import { UpdateDemandeDto } from './dto/update-demande.dto';
+import { Demande } from './entities/demande.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class DemandeService {
-  create(createDemandeDto: CreateDemandeDto) {
-    return 'This action adds a new demande';
+  constructor(
+    @InjectRepository(Demande)
+    private demandeRepository: Repository<Demande>,
+  ) {}
+  create(demande: any) {
+    return this.demandeRepository.create(demande);
   }
 
-  findAll() {
-    return `This action returns all demande`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} demande`;
+  find(query: any) {
+    const { relations, ...where } = query;
+    return this.demandeRepository.find({
+      relations: relations || {},
+      where: where || {},
+    });
   }
 
   update(id: number, updateDemandeDto: UpdateDemandeDto) {
-    return `This action updates a #${id} demande`;
+    return this.demandeRepository.update({ id }, updateDemandeDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} demande`;
+    return this.demandeRepository.delete({ id });
   }
 }
