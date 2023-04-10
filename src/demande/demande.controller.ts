@@ -32,17 +32,12 @@ export class DemandeController {
     return this.demandeService.find(query);
   }
 
-  /**
-   * TODO: - after adding authentification get user and add it to the querry
-   */
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDemandeDto: UpdateDemandeDto) {
     return this.demandeService.update(+id, updateDemandeDto);
   }
 
-  /**
-   * TODO: - after adding authentification get user and add it to the querry
-   */
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.demandeService.remove(+id);
