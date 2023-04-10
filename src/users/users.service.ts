@@ -15,12 +15,12 @@ export class UsersService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const userRepository = await this.usersRepository.save(createUserDto);
   }
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
-
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  find(query) {
+    const { relations, ...where } = query;
+    return this.usersRepository.find({
+      relations: relations || {},
+      where: where || {},
+    });
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
