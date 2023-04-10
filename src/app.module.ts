@@ -10,6 +10,7 @@ import { MachineModule } from './machine/machine.module';
 import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
 import { MachinePicesModule } from './machine-pices/machine-pices.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MachinePicesModule } from './machine-pices/machine-pices.module';
     PieceModule,
     DatabaseModule,
     MachinePicesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
