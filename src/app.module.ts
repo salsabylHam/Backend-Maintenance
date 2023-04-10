@@ -9,6 +9,7 @@ import { DamageCodeModule } from './damage-code/damage-code.module';
 import { MachineModule } from './machine/machine.module';
 import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
+import { MachinePicesModule } from './machine-pices/machine-pices.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DatabaseModule } from './database/database.module';
     MachineModule,
     PieceModule,
     DatabaseModule,
+    MachinePicesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

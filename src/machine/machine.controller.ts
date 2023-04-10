@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { MachineService } from './machine.service';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('machine')
 @Controller('machine')
 export class MachineController {
   constructor(private readonly machineService: MachineService) {}
@@ -13,13 +23,8 @@ export class MachineController {
   }
 
   @Get()
-  findAll() {
-    return this.machineService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.machineService.findOne(+id);
+  find(@Query() query) {
+    return this.machineService.find(query);
   }
 
   @Patch(':id')
