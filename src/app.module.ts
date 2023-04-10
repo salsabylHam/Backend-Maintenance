@@ -9,12 +9,21 @@ import { DamageCodeModule } from './damage-code/damage-code.module';
 import { MachineModule } from './machine/machine.module';
 import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
-import { MachinePicesResolver } from './machine-pices/machine-pices.resolver';
 import { MachinePicesModule } from './machine-pices/machine-pices.module';
 
 @Module({
-  imports: [UsersModule, OrderModule, DemandeModule, DamageGroupModule, DamageCodeModule, MachineModule, PieceModule, DatabaseModule, MachinePicesModule],
+  imports: [
+    UsersModule,
+    OrderModule,
+    DemandeModule,
+    DamageGroupModule,
+    DamageCodeModule,
+    MachineModule,
+    PieceModule,
+    DatabaseModule,
+    MachinePicesModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, MachinePicesResolver],
+  providers: [AppService],
 })
 export class AppModule {}
