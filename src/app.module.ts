@@ -11,7 +11,16 @@ import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [UsersModule, OrderModule, DemandeModule, DamageGroupModule, DamageCodeModule, MachineModule, PieceModule, DatabaseModule],
+  imports: [
+    UsersModule,
+    OrderModule,
+    DemandeModule,
+    DamageGroupModule,
+    DamageCodeModule,
+    MachineModule,
+    PieceModule,
+    DatabaseModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
