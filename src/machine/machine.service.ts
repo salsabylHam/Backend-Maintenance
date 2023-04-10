@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Machine } from './entities/machine.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MachineService {
+  constructor(
+    @InjectRepository(Machine)
+    private readonly machineRepository: Repository<Machine>,
+  ) {}
   create(createMachineDto: CreateMachineDto) {
-    return 'This action adds a new machine';
+    return this.machineRepository.save(createMachineDto);
   }
 
-  findAll() {
-    return `This action returns all machine`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} machine`;
+  find(query) {
+    const { relations, ...where } = query;
+    return this.machineRepository.find({
+      relations: relations || {},
+      where: where || {},
+    });
   }
 
   update(id: number, updateMachineDto: UpdateMachineDto) {
-    return `This action updates a #${id} machine`;
+    return this.machineRepository.update({ id }, updateMachineDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} machine`;
+    return this.machineRepository.delete({ id });
   }
 }
