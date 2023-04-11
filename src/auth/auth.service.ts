@@ -22,7 +22,7 @@ export class AuthService {
     if (
       userData.length == 0 ||
       (!options.noPassword &&
-        !(await bcrypt.compare(password, userData.password)))
+        !(await bcrypt.compare(password, userData[0].password)))
     )
       throw new UnauthorizedException('Incorrect login credentials!');
     const user = userData.pop();
