@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { PieceService } from './piece.service';
 import { CreatePieceDto } from './dto/create-piece.dto';
 import { UpdatePieceDto } from './dto/update-piece.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('piece')
 @Controller('piece')
 export class PieceController {
   constructor(private readonly pieceService: PieceService) {}
@@ -13,13 +23,8 @@ export class PieceController {
   }
 
   @Get()
-  findAll() {
-    return this.pieceService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pieceService.findOne(+id);
+  findAll(@Query() query) {
+    return this.pieceService.find(query);
   }
 
   @Patch(':id')
