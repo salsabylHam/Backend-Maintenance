@@ -24,7 +24,7 @@ export class UsersController {
 
   @Get()
   find(@Query() query) {
-    return this.usersService.find(query);
+    return this.usersService.find(query, { noPassword: true });
   }
 
   @Patch(':id')

@@ -14,8 +14,6 @@ export class User {
   @Column()
   password: string;
   @Column()
-  confirmePassword: string;
-  @Column()
   phone: string;
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];

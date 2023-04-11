@@ -13,37 +13,29 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<void> {
-    const password = await bcrypt.hash(createUserDto.password, 10);
-    const confirmePassword = await bcrypt.hash(
-      createUserDto.confirmePassword,
-      10,
-    );
-    const user = this.usersRepository.create({
-      ...createUserDto,
-      password,
-      confirmePassword,
+  async create(createUserDto: CreateUserDto) {
+    const { confirmePassword, password, ...profile } = createUserDto;
+    const user = await this.usersRepository.save({
+      ...profile,
+      password: await bcrypt.hash(password, 10),
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const userRepository = await this.usersRepository.save(user);
+    return !!user;
   }
-  async find(query) {
+  async find(query, options: any = { noPassword: false }) {
     const { relations, ...where } = query;
     const users = await this.usersRepository.find({
       relations: relations || {},
       where: where || {},
     });
-    const usersWithoutPasswords = await Promise.all(
-      users.map(async (user) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, confirmePassword, ...userWithoutPassword } = user;
-        return userWithoutPassword;
-      }),
-    );
+    if (!options.noPassword) return users;
+    const usersWithoutPasswords = users.map((user) => {
+      delete user.password;
+      return user;
+    });
+
     return usersWithoutPasswords;
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const userRepository = await this.usersRepository.findOneBy({ id });
     if (userRepository) {
       this.usersRepository.update(id, updateUserDto);
