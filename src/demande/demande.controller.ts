@@ -6,28 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { DemandeService } from './demande.service';
 import { CreateDemandeDto } from './dto/create-demande.dto';
 import { UpdateDemandeDto } from './dto/update-demande.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('demande')
+@UseGuards(AuthGuard('jwt'))
 export class DemandeController {
   constructor(private readonly demandeService: DemandeService) {}
 
   @Post()
-  create(@Body() createDemandeDto: CreateDemandeDto) {
-    return this.demandeService.create(createDemandeDto);
+  create(@Req() req, @Body() createDemandeDto: CreateDemandeDto) {
+    return this.demandeService.create({
+      ...createDemandeDto,
+      userId: req.user.id,
+    });
   }
 
   @Get()
-  findAll() {
-    return this.demandeService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.demandeService.findOne(+id);
+  find(@Query() query) {
+    return this.demandeService.find(query);
   }
 
   @Patch(':id')
