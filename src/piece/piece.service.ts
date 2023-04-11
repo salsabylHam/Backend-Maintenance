@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePieceDto } from './dto/create-piece.dto';
 import { UpdatePieceDto } from './dto/update-piece.dto';
+import { Piece } from './entities/piece.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PieceService {
+  constructor(
+    @InjectRepository(Piece)
+    private pieceRepository: Repository<Piece>,
+  ) {}
   create(createPieceDto: CreatePieceDto) {
-    return 'This action adds a new piece';
+    return this.pieceRepository.save(createPieceDto);
   }
 
-  findAll() {
-    return `This action returns all piece`;
+  async find(query) {
+    const { relations, ...where } = query;
+    return this.pieceRepository.find({
+      relations: relations || {},
+      where: where || {},
+    });
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} piece`;
-  }
-
   update(id: number, updatePieceDto: UpdatePieceDto) {
-    return `This action updates a #${id} piece`;
+    const piece = this.pieceRepository.findOneBy({ id });
+    if (piece) {
+      return this.pieceRepository.update(id, updatePieceDto);
+    } else {
+      return 'piece does not exist !';
+    }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} piece`;
+    return this.pieceRepository.delete(id);
   }
 }
