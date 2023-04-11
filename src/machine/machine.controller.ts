@@ -11,7 +11,8 @@ import {
 import { MachineService } from './machine.service';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('machine')
 @Controller('machine')
 export class MachineController {
   constructor(private readonly machineService: MachineService) {}
