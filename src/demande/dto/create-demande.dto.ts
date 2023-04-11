@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsString } from 'class-validator';
-import { PRIORITY } from 'src/shaire/enums/priority.enums';
+import { PRIORITY } from 'src/shared/enums/priority.enums';
 
 export class CreateDemandeDto {
   @IsString()

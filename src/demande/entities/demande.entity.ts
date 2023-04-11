@@ -1,7 +1,7 @@
 import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
 import { DamageGroup } from 'src/damage-group/entities/damage-group.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
-import { PRIORITY } from 'src/shaire/enums/priority.enums';
+import { PRIORITY } from 'src/shared/enums/priority.enums';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
