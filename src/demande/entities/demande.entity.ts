@@ -47,8 +47,9 @@ export class Demande {
   })
   createdAt: Date;
   @Column()
-  MachineId: number;
+  machineId: number;
   @ManyToOne(() => Machine, (machine) => machine.demandes)
+  @JoinColumn({ name: 'machineId' })
   machine: Machine;
   @UpdateDateColumn({
     type: 'timestamp',
