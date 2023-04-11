@@ -11,7 +11,7 @@ export class PieceService {
   constructor(
     @InjectRepository(Piece)
     private pieceRepository: Repository<Piece>,
-  ) { }
+  ) {}
   create(createPieceDto: CreatePieceDto) {
     return this.pieceRepository.save(createPieceDto);
   }
@@ -29,7 +29,7 @@ export class PieceService {
       if (!piece) {
         throw new CustomErrorException({
           status: 404,
-          message: `No damageGroup found with id ${id}`,
+          message: `No piece found with id ${id}`,
         });
       }
 
