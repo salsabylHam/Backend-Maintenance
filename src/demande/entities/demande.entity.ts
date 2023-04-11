@@ -1,6 +1,7 @@
 import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
 import { DamageGroup } from 'src/damage-group/entities/damage-group.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
+import { PRIORITY } from 'src/shaire/enums/priority.enums';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -23,7 +24,7 @@ export class Demande {
   @Column()
   damageGroupId: number;
   @Column()
-  damageCodeId: string;
+  damageCodeId: number;
   @ManyToOne(() => DamageCode, (damageCode) => damageCode.demandes)
   @JoinColumn({ name: 'damageCodeId' })
   damageCode: DamageCode;
@@ -32,7 +33,7 @@ export class Demande {
   damageGroup: DamageGroup;
   @Column()
   typeOfInterventions: string;
-  @Column()
+  @Column({ type: 'enum', enum: PRIORITY })
   priority: string;
   @Column({ type: 'text' })
   note: string;

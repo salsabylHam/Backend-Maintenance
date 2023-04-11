@@ -17,11 +17,12 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-  async verifyUser({ email, password }: SigninDTO) {
+  async verifyUser({ email, password }, options: any = { noPassword: false }) {
     const userData = await this.userService.find({ email });
     if (
       userData.length == 0 ||
-      !(await bcrypt.compare(password, userData.password))
+      (!options.noPassword &&
+        !(await bcrypt.compare(password, userData.password)))
     )
       throw new UnauthorizedException('Incorrect login credentials!');
     const user = userData.pop();
