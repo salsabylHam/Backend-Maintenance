@@ -31,7 +31,7 @@ export class UsersService {
     const usersWithoutPasswords = await Promise.all(
       users.map(async (user) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...userWithoutPassword } = user;
+        const { password, confirmePassword, ...userWithoutPassword } = user;
         return userWithoutPassword;
       }),
     );
