@@ -14,9 +14,11 @@ import { DemandeService } from './demande.service';
 import { CreateDemandeDto } from './dto/create-demande.dto';
 import { UpdateDemandeDto } from './dto/update-demande.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('demande')
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 export class DemandeController {
   constructor(private readonly demandeService: DemandeService) {}
 
