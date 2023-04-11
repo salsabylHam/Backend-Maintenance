@@ -11,6 +11,7 @@ import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
 import { MachinePicesModule } from './machine-pices/machine-pices.module';
 import { AuthModule } from './auth/auth.module';
+import { OrderTechniciansModule } from './order_technicians/order_technicians.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     DatabaseModule,
     MachinePicesModule,
     AuthModule,
+    OrderTechniciansModule,
   ],
   controllers: [AppController],
   providers: [AppService],
