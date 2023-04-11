@@ -4,13 +4,14 @@ import { UpdatePieceDto } from './dto/update-piece.dto';
 import { Piece } from './entities/piece.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class PieceService {
   constructor(
     @InjectRepository(Piece)
     private pieceRepository: Repository<Piece>,
-  ) {}
+  ) { }
   create(createPieceDto: CreatePieceDto) {
     return this.pieceRepository.save(createPieceDto);
   }
@@ -22,12 +23,19 @@ export class PieceService {
       where: where || {},
     });
   }
-  update(id: number, updatePieceDto: UpdatePieceDto) {
-    const piece = this.pieceRepository.findOneBy({ id });
-    if (piece) {
+  async update(id: number, updatePieceDto: UpdatePieceDto) {
+    try {
+      const piece = await this.pieceRepository.findOneBy({ id });
+      if (!piece) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No damageGroup found with id ${id}`,
+        });
+      }
+
       return this.pieceRepository.update(id, updatePieceDto);
-    } else {
-      return 'piece does not exist !';
+    } catch (err) {
+      throw new CustomErrorException(err);
     }
   }
 
