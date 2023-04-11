@@ -10,6 +10,14 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async signIn({ email, password }: SigninDTO) {
+    const user = await this.verifyUser({ email, password });
+    const payload = { email: email, sub: user.id };
+    return {
+      user,
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+  async verifyUser({ email, password }: SigninDTO) {
     const userData = await this.userService.find({ email });
     if (
       userData.length == 0 ||
@@ -18,10 +26,6 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect login credentials!');
     const user = userData.pop();
     delete user.password;
-    const payload = { username: user.username, sub: user.id };
-    return {
-      user,
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    return user;
   }
 }
