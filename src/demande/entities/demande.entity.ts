@@ -1,6 +1,7 @@
 import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
 import { DamageGroup } from 'src/damage-group/entities/damage-group.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
+import { PRIORITY } from 'src/shaire/enums/priority.enums';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -8,6 +9,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -21,7 +24,7 @@ export class Demande {
   @Column()
   damageGroupId: number;
   @Column()
-  damageCodeId: string;
+  damageCodeId: number;
   @ManyToOne(() => DamageCode, (damageCode) => damageCode.demandes)
   @JoinColumn({ name: 'damageCodeId' })
   damageCode: DamageCode;
@@ -30,19 +33,29 @@ export class Demande {
   damageGroup: DamageGroup;
   @Column()
   typeOfInterventions: string;
-  @Column()
+  @Column({ type: 'enum', enum: PRIORITY })
   priority: string;
   @Column({ type: 'text' })
   note: string;
-  @ManyToOne(() => User, (user) => user.demandes)
-  createdBy: number;
   @Column()
+  userId: number;
+  @ManyToOne(() => User, (user) => user.demandes)
+  @JoinColumn({ name: 'userId' })
+  createdBy: User;
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdAt: Date;
   @Column()
   machineId: number;
   @ManyToOne(() => Machine, (machine) => machine.demandes)
   @JoinColumn({ name: 'machineId' })
   machine: Machine;
-  @Column()
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   updatedAt: Date;
 }

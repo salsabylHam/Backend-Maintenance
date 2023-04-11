@@ -3,12 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from 'src/users/users.service';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private configService: ConfigService,
-    private readonly userService: UsersService,
+    private readonly authService: AuthService,
   ) {
     super({
       usernameField: 'email',
@@ -18,8 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user = await this.userService.find({ email: payload.email });
-    if (user.length == 0) throw new UnauthorizedException('Invalid Token!');
-    return user.pop();
+    return this.authService.verifyUser(
+      { email: payload.email, password: '' },
+      { noPassword: true },
+    );
   }
 }
