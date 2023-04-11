@@ -15,9 +15,14 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<void> {
     const password = await bcrypt.hash(createUserDto.password, 10);
+    const confirmePassword = await bcrypt.hash(
+      createUserDto.confirmePassword,
+      10,
+    );
     const user = this.usersRepository.create({
       ...createUserDto,
       password,
+      confirmePassword,
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const userRepository = await this.usersRepository.save(user);
@@ -31,7 +36,7 @@ export class UsersService {
     const usersWithoutPasswords = await Promise.all(
       users.map(async (user) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...userWithoutPassword } = user;
+        const { password, confirmePassword, ...userWithoutPassword } = user;
         return userWithoutPassword;
       }),
     );
