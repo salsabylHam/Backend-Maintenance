@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDamageCodeDto } from './dto/create-damage-code.dto';
 import { UpdateDamageCodeDto } from './dto/update-damage-code.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DamageCode } from './entities/damage-code.entity';
+import { Repository } from 'typeorm';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class DamageCodeService {
+  constructor(
+    @InjectRepository(DamageCode)
+    private damageCodeRepository: Repository<DamageCode>,
+  ) {}
   create(createDamageCodeDto: CreateDamageCodeDto) {
-    return 'This action adds a new damageCode';
+    return this.damageCodeRepository.save(createDamageCodeDto);
   }
 
-  findAll() {
-    return `This action returns all damageCode`;
+  find(query) {
+    const { relations, ...where } = query;
+    return this.damageCodeRepository.find({
+      relations: relations || {},
+      where: where || {},
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} damageCode`;
-  }
-
-  update(id: number, updateDamageCodeDto: UpdateDamageCodeDto) {
-    return `This action updates a #${id} damageCode`;
+  async update(id: number, updateDamageCodeDto: UpdateDamageCodeDto) {
+    try {
+      const damageCode = await this.damageCodeRepository.findOneBy({ id });
+      if (!damageCode) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No damageCode found with id ${id}`,
+        });
+      }
+      return this.damageCodeRepository.update(id, updateDamageCodeDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} damageCode`;
+    return this.damageCodeRepository.delete(id);
   }
 }
