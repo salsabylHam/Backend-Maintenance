@@ -1,24 +1,24 @@
 version: '3.8'
 
 services:
-  maintenance:
-    container_name: maintenance
-    build:
-      context: .
-      target: development
-      dockerfile: ./Dockerfile
-    command: npm run start:dev
-    ports:
-      - 4000:4000
-      - 9229:9229
-    networks:
-      - maintenance-network
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    restart: always
-    depends_on:
-      - mysqldb
+  # maintenance:
+  #   container_name: maintenance
+  #   build:
+  #     context: .
+  #     target: development
+  #     dockerfile: ./Dockerfile
+  #   command: npm run start:dev
+  #   ports:
+  #     - 4000:4000
+  #     - 9229:9229
+  #   networks:
+  #     - maintenance-network
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   restart: always
+  #   depends_on:
+  #     - mysqldb
 
   mysqldb:
     image: mysql:latest

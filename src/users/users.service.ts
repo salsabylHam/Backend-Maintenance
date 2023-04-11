@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -11,16 +12,30 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
+
   async create(createUserDto: CreateUserDto): Promise<void> {
+    const password = await bcrypt.hash(createUserDto.password, 10);
+    const user = this.usersRepository.create({
+      ...createUserDto,
+      password,
+    });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const userRepository = await this.usersRepository.save(createUserDto);
+    const userRepository = await this.usersRepository.save(user);
   }
-  find(query) {
+  async find(query) {
     const { relations, ...where } = query;
-    return this.usersRepository.find({
+    const users = await this.usersRepository.find({
       relations: relations || {},
       where: where || {},
     });
+    const usersWithoutPasswords = await Promise.all(
+      users.map(async (user) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      }),
+    );
+    return usersWithoutPasswords;
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
