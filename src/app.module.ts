@@ -12,6 +12,8 @@ import { DatabaseModule } from './database/database.module';
 import { MachinePicesModule } from './machine-pices/machine-pices.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderTechniciansModule } from './order_technicians/order_technicians.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { UserNotificationsModule } from './user-notifications/user-notifications.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { OrderTechniciansModule } from './order_technicians/order_technicians.mo
     MachinePicesModule,
     AuthModule,
     OrderTechniciansModule,
+    NotificationsModule,
+    UserNotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
