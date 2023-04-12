@@ -13,17 +13,25 @@ export class DamageGroupService {
     private damageGroupRepository: Repository<DamageGroup>,
   ) {}
   create(createDamageGroupDto: CreateDamageGroupDto) {
-    return this.damageGroupRepository.save(createDamageGroupDto);
+    try {
+      return this.damageGroupRepository.save(createDamageGroupDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   find(query) {
-    const { relations, ...where } = query;
-    return this.damageGroupRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return this.damageGroupRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   async update(id: number, updateDamageGroupDto: UpdateDamageGroupDto) {

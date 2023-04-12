@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class UsersService {
@@ -14,35 +15,49 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { confirmePassword, password, ...profile } = createUserDto;
-    const user = await this.usersRepository.save({
-      ...profile,
-      password: await bcrypt.hash(password, 10),
-    });
-    return !!user;
+    try {
+      const { confirmePassword, password, ...profile } = createUserDto;
+      const user = await this.usersRepository.save({
+        ...profile,
+        password: await bcrypt.hash(password, 10),
+      });
+      return !!user;
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
   async find(query, options: any = { noPassword: false }) {
-    const { relations, ...where } = query;
-    const users = await this.usersRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
-    if (!options.noPassword) return users;
-    const usersWithoutPasswords = users.map((user) => {
-      delete user.password;
-      return user;
-    });
+    try {
+      const { relations, ...where } = query;
+      const users = await this.usersRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+      if (!options.noPassword) return users;
+      const usersWithoutPasswords = users.map((user) => {
+        delete user.password;
+        return user;
+      });
 
-    return usersWithoutPasswords;
+      return usersWithoutPasswords;
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const userRepository = await this.usersRepository.findOneBy({ id });
-    if (userRepository) {
-      this.usersRepository.update(id, updateUserDto);
-    } else {
-      return 'no user found with this id';
+    try {
+      const userRepository = await this.usersRepository.findOneBy({ id });
+      if (!userRepository) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No user found with id ${id}`,
+        });
+      }
+      return this.usersRepository.update(id, updateUserDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
     }
   }
   async remove(id: number): Promise<void> {

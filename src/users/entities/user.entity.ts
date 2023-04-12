@@ -18,6 +18,9 @@ export class User {
   phone: string;
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];
-  @OneToMany(() => OrderTechnician, (orderTechnician) => orderTechnician.technician)
+  @OneToMany(
+    () => OrderTechnician,
+    (orderTechnician) => orderTechnician.technician,
+  )
   orderTechnician: OrderTechnician;
 }

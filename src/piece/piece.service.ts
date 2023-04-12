@@ -13,17 +13,25 @@ export class PieceService {
     private pieceRepository: Repository<Piece>,
   ) {}
   create(createPieceDto: CreatePieceDto) {
-    return this.pieceRepository.save(createPieceDto);
+    try {
+      return this.pieceRepository.save(createPieceDto);
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
 
   async find(query) {
-    const { relations, ...where } = query;
-    return this.pieceRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return await this.pieceRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
   async update(id: number, updatePieceDto: UpdatePieceDto) {
     try {

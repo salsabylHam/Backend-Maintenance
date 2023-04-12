@@ -13,17 +13,25 @@ export class DamageCodeService {
     private damageCodeRepository: Repository<DamageCode>,
   ) {}
   create(createDamageCodeDto: CreateDamageCodeDto) {
-    return this.damageCodeRepository.save(createDamageCodeDto);
+    try {
+      return this.damageCodeRepository.save(createDamageCodeDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   find(query) {
-    const { relations, ...where } = query;
-    return this.damageCodeRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return this.damageCodeRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   async update(id: number, updateDamageCodeDto: UpdateDamageCodeDto) {
