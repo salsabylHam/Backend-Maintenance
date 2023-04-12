@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserNotificationDto } from './dto/create-user-notification.dto';
-import { UpdateUserNotificationDto } from './dto/update-user-notification.dto';
 import { Repository } from 'typeorm';
 import { UserNotification } from './entities/user-notification.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,9 +15,10 @@ export class UserNotificationsService {
     try {
       const { relations, ...where } = query;
       return this.userNotificationRepository.find({
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: Object.keys(relations || {}).reduce(
+          (a, v) => ({ ...a, [v]: true }),
+          {},
+        ),
         where: where || {},
       });
     } catch (err) {
