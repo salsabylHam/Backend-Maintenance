@@ -14,8 +14,8 @@ import { DemandeService } from './demande.service';
 import { CreateDemandeDto } from './dto/create-demande.dto';
 import { UpdateDemandeDto } from './dto/update-demande.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
-
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+@ApiTags('demande')
 @Controller('demande')
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()

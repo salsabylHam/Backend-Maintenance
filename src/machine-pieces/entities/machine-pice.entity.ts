@@ -3,12 +3,12 @@ import { Piece } from 'src/piece/entities/piece.entity';
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class MachinePice {
+export class MachinePiece {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne(() => Piece, (piece) => piece.machinePice)
+  @ManyToOne(() => Piece, (piece) => piece.machinePiece)
   piece: Piece;
 
-  @ManyToOne(() => Machine, (machine) => machine.machinePice)
+  @ManyToOne(() => Machine, (machine) => machine.machinePiece)
   machine: Machine;
 }
