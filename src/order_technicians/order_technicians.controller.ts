@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { OrderTechniciansService } from './order_technicians.service';
-import { CreateOrderTechnicianDto } from './dto/create-order_technician.dto';
 import { UpdateOrderTechnicianDto } from './dto/update-order_technician.dto';
 
 @Controller('order-technicians')

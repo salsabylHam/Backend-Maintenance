@@ -15,7 +15,9 @@ export class OrderTechniciansService {
   find(query: any) {
     const { relations, ...where } = query;
     return this.orderTechniciansRepository.find({
-      relations: relations || {},
+      relations:
+        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
+        {},
       where: where || {},
     });
   }

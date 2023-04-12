@@ -19,7 +19,9 @@ export class DamageGroupService {
   find(query) {
     const { relations, ...where } = query;
     return this.damageGroupRepository.find({
-      relations: relations || {},
+      relations:
+        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
+        {},
       where: where || {},
     });
   }

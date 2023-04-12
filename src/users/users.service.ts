@@ -24,7 +24,9 @@ export class UsersService {
   async find(query, options: any = { noPassword: false }) {
     const { relations, ...where } = query;
     const users = await this.usersRepository.find({
-      relations: relations || {},
+      relations:
+        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
+        {},
       where: where || {},
     });
     if (!options.noPassword) return users;
