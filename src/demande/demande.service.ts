@@ -18,7 +18,9 @@ export class DemandeService {
   find(query: any) {
     const { relations, ...where } = query;
     return this.demandeRepository.find({
-      relations: relations || {},
+      relations:
+        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
+        {},
       where: where || {},
     });
   }

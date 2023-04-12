@@ -18,7 +18,9 @@ export class MachineService {
   find(query) {
     const { relations, ...where } = query;
     return this.machineRepository.find({
-      relations: relations || {},
+      relations:
+        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
+        {},
       where: where || {},
     });
   }

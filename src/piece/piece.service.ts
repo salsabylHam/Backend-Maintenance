@@ -19,7 +19,9 @@ export class PieceService {
   async find(query) {
     const { relations, ...where } = query;
     return this.pieceRepository.find({
-      relations: relations || {},
+      relations:
+        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
+        {},
       where: where || {},
     });
   }
