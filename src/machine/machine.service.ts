@@ -4,6 +4,7 @@ import { UpdateMachineDto } from './dto/update-machine.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Machine } from './entities/machine.entity';
 import { Repository } from 'typeorm';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class MachineService {
@@ -25,8 +26,19 @@ export class MachineService {
     });
   }
 
-  update(id: number, updateMachineDto: UpdateMachineDto) {
-    return this.machineRepository.update({ id }, updateMachineDto);
+  async update(id: number, updateMachineDto: UpdateMachineDto) {
+    try {
+      const machine = await this.machineRepository.findOneBy({ id });
+      if (!machine) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No machine found with id ${id}`,
+        });
+      }
+      return this.machineRepository.update({ id }, updateMachineDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   remove(id: number) {

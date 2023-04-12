@@ -4,6 +4,7 @@ import { UpdateDemandeDto } from './dto/update-demande.dto';
 import { Demande } from './entities/demande.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class DemandeService {
@@ -25,8 +26,19 @@ export class DemandeService {
     });
   }
 
-  update(id: number, updateDemandeDto: UpdateDemandeDto) {
-    return this.demandeRepository.update({ id }, updateDemandeDto);
+  async update(id: number, updateDemandeDto: UpdateDemandeDto) {
+    try {
+      const demande = await this.demandeRepository.findOneBy({ id });
+      if (!demande) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No demande found with id ${id}`,
+        });
+      }
+      return this.demandeRepository.update({ id }, updateDemandeDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   remove(id: number) {

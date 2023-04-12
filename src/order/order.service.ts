@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderTransaction } from './transaction/order.transaction';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class OrderService {
@@ -35,8 +36,19 @@ export class OrderService {
     });
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return this.orderRepository.update({ id }, updateOrderDto);
+  async update(id: number, updateOrderDto: UpdateOrderDto) {
+    try {
+      const order = await this.orderRepository.findOneBy({ id });
+      if (!order) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No order found with id ${id}`,
+        });
+      }
+      return this.orderRepository.update({ id }, updateOrderDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   remove(id: number) {

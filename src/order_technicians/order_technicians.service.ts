@@ -4,6 +4,7 @@ import { UpdateOrderTechnicianDto } from './dto/update-order_technician.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderTechnician } from './entities/order_technician.entity';
 import { Repository } from 'typeorm';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class OrderTechniciansService {
@@ -22,11 +23,24 @@ export class OrderTechniciansService {
     });
   }
 
-  update(id: number, updateOrderTechnicianDto: UpdateOrderTechnicianDto) {
-    return this.orderTechniciansRepository.update(
-      { id },
-      updateOrderTechnicianDto,
-    );
+  async update(id: number, updateOrderTechnicianDto: UpdateOrderTechnicianDto) {
+    try {
+      const orderTechnicians = await this.orderTechniciansRepository.findOneBy({
+        id,
+      });
+      if (!orderTechnicians) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No orderTechnicians found with id ${id}`,
+        });
+      }
+      return this.orderTechniciansRepository.update(
+        { id },
+        updateOrderTechnicianDto,
+      );
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   remove(id: number) {

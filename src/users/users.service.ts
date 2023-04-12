@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class UsersService {
@@ -38,11 +39,17 @@ export class UsersService {
     return usersWithoutPasswords;
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const userRepository = await this.usersRepository.findOneBy({ id });
-    if (userRepository) {
-      this.usersRepository.update(id, updateUserDto);
-    } else {
-      return 'no user found with this id';
+    try {
+      const userRepository = await this.usersRepository.findOneBy({ id });
+      if (!userRepository) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No user found with id ${id}`,
+        });
+      }
+      return this.usersRepository.update(id, updateUserDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
     }
   }
   async remove(id: number): Promise<void> {
