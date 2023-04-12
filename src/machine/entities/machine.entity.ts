@@ -1,5 +1,5 @@
 import { Demande } from 'src/demande/entities/demande.entity';
-import { MachinePice } from 'src/machine-pices/entities/machine-pice.entity';
+import { MachinePiece } from 'src/machine-pieces/entities/machine-pice.entity';
 import {
   Column,
   Entity,
@@ -16,6 +16,6 @@ export class Machine {
   demandes: Demande[];
   @Column()
   description: string;
-  @ManyToMany(() => MachinePice, (machinePice) => machinePice.machine)
-  machinePice: MachinePice[];
+  @ManyToMany(() => MachinePiece, (machinePiece) => machinePiece.machine)
+  machinePiece: MachinePiece[];
 }
