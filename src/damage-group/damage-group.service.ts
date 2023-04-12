@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDamageGroupDto } from './dto/create-damage-group.dto';
 import { UpdateDamageGroupDto } from './dto/update-damage-group.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DamageGroup } from './entities/damage-group.entity';
+import { Repository } from 'typeorm';
+import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 
 @Injectable()
 export class DamageGroupService {
+  constructor(
+    @InjectRepository(DamageGroup)
+    private damageGroupRepository: Repository<DamageGroup>,
+  ) {}
   create(createDamageGroupDto: CreateDamageGroupDto) {
-    return 'This action adds a new damageGroup';
+    return this.damageGroupRepository.save(createDamageGroupDto);
   }
 
-  findAll() {
-    return `This action returns all damageGroup`;
+  find(query) {
+    const { relations, ...where } = query;
+    return this.damageGroupRepository.find({
+      relations: relations || {},
+      where: where || {},
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} damageGroup`;
-  }
-
-  update(id: number, updateDamageGroupDto: UpdateDamageGroupDto) {
-    return `This action updates a #${id} damageGroup`;
+  async update(id: number, updateDamageGroupDto: UpdateDamageGroupDto) {
+    try {
+      const damageGroup = await this.damageGroupRepository.findOneBy({ id });
+      if (!damageGroup) {
+        throw new CustomErrorException({
+          status: 404,
+          message: `No damageGroup found with id ${id}`,
+        });
+      }
+      return this.damageGroupRepository.update(id, updateDamageGroupDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} damageGroup`;
+    return this.damageGroupRepository.delete(id);
   }
 }
