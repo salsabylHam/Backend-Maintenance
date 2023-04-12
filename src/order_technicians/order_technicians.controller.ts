@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { OrderTechniciansService } from './order_technicians.service';
 import { UpdateOrderTechnicianDto } from './dto/update-order_technician.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('order-technicians')
 @Controller('order-technicians')
 export class OrderTechniciansController {
   constructor(
