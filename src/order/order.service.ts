@@ -15,25 +15,32 @@ export class OrderService {
     private readonly createOrderTransaction: CreateOrderTransaction,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
-    const order = await this.createOrderTransaction.run(createOrderDto);
-    return this.find({
-      id: order.orderId,
-      relations: {
-        orderTechnician: true,
-        demande: true,
-      },
-    });
+    try {
+      const order = await this.createOrderTransaction.run(createOrderDto);
+      return this.find({
+        id: order.orderId,
+        relations: {
+          orderTechnician: true,
+          demande: true,
+        },
+      });
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
 
   find(query) {
-    const { relations, ...where } = query;
-
-    return this.orderRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return this.orderRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {

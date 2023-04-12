@@ -14,13 +14,17 @@ export class OrderTechniciansService {
   ) {}
 
   find(query: any) {
-    const { relations, ...where } = query;
-    return this.orderTechniciansRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return this.orderTechniciansRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
 
   async update(id: number, updateOrderTechnicianDto: UpdateOrderTechnicianDto) {

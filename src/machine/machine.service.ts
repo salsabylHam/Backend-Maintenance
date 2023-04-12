@@ -13,17 +13,25 @@ export class MachineService {
     private readonly machineRepository: Repository<Machine>,
   ) {}
   create(createMachineDto: CreateMachineDto) {
-    return this.machineRepository.save(createMachineDto);
+    try {
+      return this.machineRepository.save(createMachineDto);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   find(query) {
-    const { relations, ...where } = query;
-    return this.machineRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return this.machineRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   async update(id: number, updateMachineDto: UpdateMachineDto) {

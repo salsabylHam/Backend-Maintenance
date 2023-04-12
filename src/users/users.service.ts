@@ -15,28 +15,36 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { confirmePassword, password, ...profile } = createUserDto;
-    const user = await this.usersRepository.save({
-      ...profile,
-      password: await bcrypt.hash(password, 10),
-    });
-    return !!user;
+    try {
+      const { confirmePassword, password, ...profile } = createUserDto;
+      const user = await this.usersRepository.save({
+        ...profile,
+        password: await bcrypt.hash(password, 10),
+      });
+      return !!user;
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
   async find(query, options: any = { noPassword: false }) {
-    const { relations, ...where } = query;
-    const users = await this.usersRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
-    if (!options.noPassword) return users;
-    const usersWithoutPasswords = users.map((user) => {
-      delete user.password;
-      return user;
-    });
+    try {
+      const { relations, ...where } = query;
+      const users = await this.usersRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+      if (!options.noPassword) return users;
+      const usersWithoutPasswords = users.map((user) => {
+        delete user.password;
+        return user;
+      });
 
-    return usersWithoutPasswords;
+      return usersWithoutPasswords;
+    } catch (error) {
+      throw new CustomErrorException(error);
+    }
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {

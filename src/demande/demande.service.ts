@@ -13,17 +13,25 @@ export class DemandeService {
     private demandeRepository: Repository<Demande>,
   ) {}
   create(demande: any) {
-    return this.demandeRepository.create(demande);
+    try {
+      return this.demandeRepository.create(demande);
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   find(query: any) {
-    const { relations, ...where } = query;
-    return this.demandeRepository.find({
-      relations:
-        Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {}) ||
-        {},
-      where: where || {},
-    });
+    try {
+      const { relations, ...where } = query;
+      return this.demandeRepository.find({
+        relations: !!relations
+          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+          : {},
+        where: where || {},
+      });
+    } catch (err) {
+      throw new CustomErrorException(err);
+    }
   }
 
   async update(id: number, updateDemandeDto: UpdateDemandeDto) {
