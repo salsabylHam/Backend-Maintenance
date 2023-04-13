@@ -40,13 +40,13 @@ export class CreateNotificationTransaction extends BaseTransaction<
     discription: string;
   }> {
     const { technicians, ...notificationData } = notificationDTO;
-    const notification = await manager.create(Notification, {
+    const notification = await manager.save(Notification, {
       discription: notificationData.discription,
       title: notificationData.title,
     });
     const userNotification = await Promise.all(
       technicians.map(async (userId) => {
-        return await manager.create(UserNotification, {
+        return await manager.save(UserNotification, {
           userId: userId,
           vue: false,
           notificationId: notification.id,

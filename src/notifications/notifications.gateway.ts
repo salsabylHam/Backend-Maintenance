@@ -20,8 +20,8 @@ export class NotificationsGateway {
     const notification = await this.notificationsService.create(
       createNotificationDto,
     );
-    createNotificationDto.technicians.forEach(async (userId) => {
-      this.server.to(`$room.${userId}`).emit('notification', {
+    createNotificationDto.technicians.forEach((userId) => {
+      this.server.to(`room.${userId}`).emit('notification', {
         id: notification.userNotification.find(
           (userNotification) => userNotification.userId == userId,
         ).notificationId,
@@ -33,12 +33,13 @@ export class NotificationsGateway {
   }
 
   @SubscribeMessage('findAllUserNotifications')
-  findAll(@MessageBody() userId: number) {
-    return this.notificationsService.findAll(userId);
+  async findAll(@MessageBody() { userId }) {
+    const notification = await this.notificationsService.findAll(userId);
+    this.server.to(`room.${userId}`).emit('notification', notification);
   }
 
   @SubscribeMessage('joinUserNotificationRoom')
-  Join(@MessageBody() userId: number, @ConnectedSocket() client: Socket) {
-    client.join(`$room.${userId}`);
+  Join(@MessageBody() { userId }, @ConnectedSocket() client: Socket) {
+    client.join(`room.${userId}`);
   }
 }

@@ -1,3 +1,4 @@
+import { Notification } from 'src/notifications/entities/notification.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
