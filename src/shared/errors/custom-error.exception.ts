@@ -2,7 +2,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class CustomErrorException extends HttpException {
   constructor(error: any) {
-    console.log(error);
     let message = '';
 
     if (error.message) {

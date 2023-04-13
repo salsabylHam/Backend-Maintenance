@@ -1,5 +1,6 @@
 import { Demande } from 'src/demande/entities/demande.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
+import { UserNotification } from 'src/user-notifications/entities/user-notification.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -23,4 +24,9 @@ export class User {
     (orderTechnician) => orderTechnician.technician,
   )
   orderTechnician: OrderTechnician;
+  @OneToMany(
+    () => UserNotification,
+    (userNotification) => userNotification.user,
+  )
+  userNotification: UserNotification;
 }
