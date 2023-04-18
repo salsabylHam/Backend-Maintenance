@@ -14,6 +14,9 @@ import { AuthModule } from './auth/auth.module';
 import { OrderTechniciansModule } from './order_technicians/order_technicians.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { UserNotificationsModule } from './user-notifications/user-notifications.module';
+import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { UserNotificationsModule } from './user-notifications/user-notifications
     OrderTechniciansModule,
     NotificationsModule,
     UserNotificationsModule,
+    RolesModule,
+    PermissionsModule,
+    RolePermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
