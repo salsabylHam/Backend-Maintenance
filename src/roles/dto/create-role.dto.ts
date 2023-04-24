@@ -10,7 +10,7 @@ import { CreateRolePermissionDto } from 'src/role-permissions/dto/create-role-pe
 export class CreateRoleDTO {
   @IsNumber()
   @IsNotEmpty()
-  idUser: number;
+  userId: number;
 
   @IsString()
   @IsNotEmpty()

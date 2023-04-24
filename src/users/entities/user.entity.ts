@@ -25,8 +25,8 @@ export class User {
   password: string;
   @Column()
   phone: string;
-  @OneToMany(() => Role, (role) => role.user)
-  roles: Role[];
+  @ManyToOne(() => Role, (role) => role.user)
+  role: Role;
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];
   @OneToMany(

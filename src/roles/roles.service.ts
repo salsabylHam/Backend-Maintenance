@@ -26,7 +26,6 @@ export class RolesService {
       if (!roleExist) {
         const role = this.roleRepository.create({
           label: createRoleDTO.label,
-          idUser: createRoleDTO.idUser,
         });
         await this.roleRepository.save(role);
         await this.permissionRoleRepo.save({
@@ -45,7 +44,7 @@ export class RolesService {
 
   async find(query?: any) {
     return await this.roleRepository.find({
-      where: { idUser: In(query.idUser) } || {},
+      where: { userId: In(query.userId) } || {},
       relations: query.relations || {},
     });
   }
@@ -58,7 +57,7 @@ export class RolesService {
   async updateRole(id: number, updateRoleDTO: UpdateRoleDto) {
     try {
       const role = await this.roleRepository.findOne({ where: { id: id } });
-      if (role && role.idUser === updateRoleDTO.idUser) {
+      if (role && role.userId === updateRoleDTO.userId) {
         const permissionRole = await this.permissionRoleRepo.findOne({
           where: { idRole: role.id, idPermission: updateRoleDTO.idPermission },
         });
