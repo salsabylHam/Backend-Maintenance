@@ -1,6 +1,7 @@
 import { RolePermission } from 'src/role-permissions/entities/role-permission.entity';
-import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Permission {
   @PrimaryGeneratedColumn()
   id: number;

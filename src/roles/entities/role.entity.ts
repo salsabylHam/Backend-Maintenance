@@ -2,12 +2,13 @@ import { RolePermission } from 'src/role-permissions/entities/role-permission.en
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+Entity();
 export class Role {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,13 +18,12 @@ export class Role {
 
   @Column()
   code: string;
-  @ManyToOne(() => User, (user) => user.roles, { lazy: true, cascade: true })
-  @JoinColumn({ name: 'idUser' })
+
+  @OneToMany(() => User, (user) => user.role)
+  @JoinColumn({ name: 'userId' })
   user: User;
-
-  @Column({ nullable: true })
-  idUser: number;
-
+  @Column()
+  userId: number;
   @OneToMany(() => RolePermission, (rolePermissions) => rolePermissions.role, {
     lazy: true,
   })

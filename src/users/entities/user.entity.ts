@@ -5,7 +5,6 @@ import { UserNotification } from 'src/user-notifications/entities/user-notificat
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -25,8 +24,8 @@ export class User {
   password: string;
   @Column()
   phone: string;
-  @OneToMany(() => Role, (role) => role.user)
-  roles: Role[];
+  @ManyToOne(() => Role, (role) => role.user)
+  role: Role;
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];
   @OneToMany(
