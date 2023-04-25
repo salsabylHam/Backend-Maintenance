@@ -1,16 +1,23 @@
 import { Permission } from 'src/permissions/entities/permission.entity';
 import { Role } from 'src/roles/entities/role.entity';
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
+@Entity()
 export class RolePermission {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  idRole!: number;
+  roleId!: number;
 
   @Column()
-  idPermission!: number;
+  permissionId!: number;
 
   @Column()
   read!: boolean;
@@ -24,11 +31,17 @@ export class RolePermission {
   @Column()
   delete!: boolean;
 
-  @ManyToOne(() => Role, null, { lazy: true, cascade: true })
-  @JoinColumn({ name: 'idRole' })
+  @ManyToOne(() => Role, (role) => role.rolePermissions, {
+    lazy: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'roleId' })
   role: Role;
 
-  @ManyToOne(() => Permission, null, { lazy: true, cascade: true })
-  @JoinColumn({ name: 'idPermission' })
+  @ManyToOne(() => Permission, (permission) => permission.rolePermissions, {
+    lazy: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'permissionId' })
   permission: Permission;
 }
