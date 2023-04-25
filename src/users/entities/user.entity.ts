@@ -25,8 +25,11 @@ export class User {
   password: string;
   @Column()
   phone: string;
-  @ManyToOne(() => Role, (role) => role.user)
+  @ManyToOne(() => Role, (role) => role.users)
+  @JoinColumn({ name: 'roleId' })
   role: Role;
+  @Column()
+  roleId: number;
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];
   @OneToMany(

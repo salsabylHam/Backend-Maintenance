@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateRoleDTO } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { RolePermission } from 'src/role-permissions/entities/role-permission.entity';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,7 +44,7 @@ export class RolesService {
 
   async find(query?: any) {
     return await this.roleRepository.find({
-      where: { userId: In(query.userId) } || {},
+      where: { users: { id: query.userId } } || {},
       relations: query.relations || {},
     });
   }
@@ -57,16 +57,15 @@ export class RolesService {
   async updateRole(id: number, updateRoleDTO: UpdateRoleDto) {
     try {
       const role = await this.roleRepository.findOne({ where: { id: id } });
-      if (role && role.userId === updateRoleDTO.userId) {
+      if (role) {
         const permissionRole = await this.permissionRoleRepo.findOne({
-          where: { idRole: role.id, idPermission: updateRoleDTO.idPermission },
+          where: { roleId: role.id, permissionId: updateRoleDTO.idPermission },
         });
         if (permissionRole) {
-          const updatedPermissionRole = Object.assign(
-            permissionRole,
+          await this.permissionRoleRepo.update(
+            { id: permissionRole.id },
             updateRoleDTO.permission,
           );
-          await this.permissionRoleRepo.save(updatedPermissionRole);
           return this.roleRepository.update(id, { label: updateRoleDTO.label });
         } else {
           throw new NotFoundException(`Permission with id not found`);
@@ -78,21 +77,11 @@ export class RolesService {
       return new UnprocessableEntityException(error.message);
     }
   }
-  async deleteRole(id: number, idPermission: number) {
+  async deleteRole(id: number) {
     try {
       const role = await this.roleRepository.findOne({ where: { id: id } });
       if (role) {
-        const permissionRole = await this.permissionRoleRepo.findOne({
-          where: { idRole: role.id, idPermission: idPermission },
-        });
-        if (permissionRole) {
-          await this.permissionRoleRepo.delete({
-            id: permissionRole.id,
-          });
-          return await this.roleRepository.delete(id);
-        } else {
-          throw new NotFoundException(`Permission with id not found`);
-        }
+        return await this.roleRepository.delete(id);
       } else {
         throw new NotFoundException(`Role with id not found`);
       }
