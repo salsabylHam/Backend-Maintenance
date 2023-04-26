@@ -9,6 +9,7 @@ export class AuthService {
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
+
   async signIn({ email, password }: SigninDTO) {
     const user = await this.verifyUser({ email, password });
     const payload = { email: email, sub: user.id };
@@ -17,14 +18,19 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-  async verifyUser({ email, password }, options: any = { noPassword: false }) {
-    const userData = await this.userService.find({ email });
+
+  async verifyUser({ email, password }) {
+    const userData = await this.userService.find(
+      { email },
+      { withPassword: true },
+    );
+
     if (
       userData.length == 0 ||
-      (!options.noPassword &&
-        !(await bcrypt.compare(password, userData[0].password)))
-    )
+      !(await bcrypt.compare(password, userData[0].password))
+    ) {
       throw new UnauthorizedException('Incorrect login credentials!');
+    }
     const user = userData.pop();
     delete user.password;
     return user;

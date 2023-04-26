@@ -17,6 +17,7 @@ import { UserNotificationsModule } from './user-notifications/user-notifications
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RolePermissionsModule } from './role-permissions/role-permissions.modul
     RolesModule,
     PermissionsModule,
     RolePermissionsModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
