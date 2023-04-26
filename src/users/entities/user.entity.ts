@@ -1,4 +1,5 @@
 import { Demande } from 'src/demande/entities/demande.entity';
+import { Team } from 'src/team/entities/team.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
 import { Role } from 'src/roles/entities/role.entity';
 import { UserNotification } from 'src/user-notifications/entities/user-notification.entity';
@@ -6,6 +7,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -21,7 +24,7 @@ export class User {
   firstName: string;
   @Column()
   lastName: string;
-  @Column()
+  @Column({ select: false })
   password: string;
   @Column()
   phone: string;
@@ -42,4 +45,10 @@ export class User {
     (userNotification) => userNotification.user,
   )
   userNotification: UserNotification;
+
+  @ManyToMany(() => Team, { cascade: true })
+  @JoinTable({
+    name: 'user_team',
+  })
+  teams: Team[];
 }

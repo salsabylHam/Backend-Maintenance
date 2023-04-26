@@ -26,22 +26,28 @@ export class UsersService {
       throw new CustomErrorException(error);
     }
   }
-  async find(query, options: any = { noPassword: false }) {
+  async find(query, options?: any) {
     try {
       const { relations, ...where } = query;
       const users = await this.usersRepository.find({
+        select:
+          options && options.withPassword
+            ? {
+                password: true,
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                roleId: true,
+              }
+            : undefined,
         relations: !!relations
           ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
           : {},
         where: where || {},
       });
-      if (!options.noPassword) return users;
-      const usersWithoutPasswords = users.map((user) => {
-        delete user.password;
-        return user;
-      });
 
-      return usersWithoutPasswords;
+      return users;
     } catch (error) {
       throw new CustomErrorException(error);
     }
