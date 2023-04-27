@@ -41,7 +41,44 @@ services:
       - ./docker/logs/mysqldb:/var/log/mysql
     networks:
       - maintenance-network
-
+  ses:
+    image: node:16.14-alpine
+    entrypoint: ["/bin/sh","-c"]
+    command: 
+      - |
+        npm install -g aws-ses-v2-local
+        aws-ses-v2-local --host 0.0.0.0 --port 8005
+    ports:
+      - '8005:8005'
+    expose:
+      - '8005'
+    networks:
+      - maintenance-network
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./docker/data/minio:/data
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: root@root
+    command: server /data --console-address :9001
+  createbucket:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: root@root
+    entrypoint: ["/bin/sh","-c"]
+    command: 
+      - |
+        /usr/bin/mc config host add --api s3v4 s3 http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}
+        /usr/bin/mc mb s3/maintenance/
+      
   adminer:
     image: adminer
     container_name: adminer
