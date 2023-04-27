@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('teams')
 @ApiTags('teams')
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
