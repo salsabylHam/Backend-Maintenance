@@ -52,16 +52,16 @@ export class UsersService {
       throw new CustomErrorException(error);
     }
   }
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(query: any, updateUserDto: UpdateUserDto) {
     try {
-      const userRepository = await this.usersRepository.findOneBy({ id });
+      const userRepository = await this.usersRepository.findOneBy(query);
       if (!userRepository) {
         throw new CustomErrorException({
           status: 404,
-          message: `No user found with id ${id}`,
+          message: `No user found`,
         });
       }
-      return this.usersRepository.update(id, updateUserDto);
+      return this.usersRepository.update(query, updateUserDto);
     } catch (err) {
       throw new CustomErrorException(err);
     }
