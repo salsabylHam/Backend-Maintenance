@@ -1,13 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SigninDTO } from './dto/Signin.dto';
+import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async signIn({ email, password }: SigninDTO) {
@@ -34,5 +40,45 @@ export class AuthService {
     const user = userData.pop();
     delete user.password;
     return user;
+  }
+
+  async forgotPassword(data: any) {
+    const users = await this.userService.find({ email: data.email });
+
+    if (users.length) {
+      const token = this.jwtService.sign({ email: data.email });
+      await this.mailService.sendUserForgotPasswordUrl(users[0], token);
+      return { status: 'success' };
+    } else {
+      return new UnprocessableEntityException('User not found');
+    }
+  }
+
+  async resetPassword(data: any) {
+    try {
+      if (!this.jwtService.verify(data.token)) {
+        throw new UnprocessableEntityException(
+          'Your link has expired please contact your admin to send you a new link',
+        );
+      }
+      const email = this.jwtService.decode(data.token)['email'];
+      const user = await this.userService.find({ email });
+
+      if (!user) {
+        throw new UnprocessableEntityException(
+          'No user request to change the password with this link',
+        );
+      }
+
+      await this.userService.update(
+        { email },
+        {
+          password: bcrypt.hashSync(data.password, 10),
+        },
+      );
+      return { status: 'success' };
+    } catch (err) {
+      return new UnprocessableEntityException(err.message);
+    }
   }
 }
