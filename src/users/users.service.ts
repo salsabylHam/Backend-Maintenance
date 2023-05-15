@@ -19,7 +19,7 @@ export class UsersService {
       const { confirmePassword, password, ...profile } = createUserDto;
       const user = await this.usersRepository.save({
         ...profile,
-        password: await bcrypt.hash(password, 10),
+        password: password ? await bcrypt.hash(password, 10) : '',
       });
       return !!user;
     } catch (error) {

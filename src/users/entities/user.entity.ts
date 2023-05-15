@@ -31,7 +31,7 @@ export class User {
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: 'roleId' })
   role: Role;
-  @Column()
+  @Column({ nullable: true })
   roleId: number;
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];

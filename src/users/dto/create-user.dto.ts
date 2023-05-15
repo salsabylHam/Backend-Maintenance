@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   Matches,
@@ -22,8 +23,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   lastName: string;
+
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MinLength(6)
   @MaxLength(48)
   @IsString()
@@ -31,11 +33,13 @@ export class CreateUserDto {
     message: 'password too weak',
   })
   password: string;
+
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @Match(CreateUserDto, (user) => user.password)
   confirmePassword: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsPhoneNumber()
