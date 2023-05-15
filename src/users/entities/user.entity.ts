@@ -18,28 +18,38 @@ import {
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   email: string;
+
   @Column()
   firstName: string;
+
   @Column()
   lastName: string;
+
   @Column({ select: false })
   password: string;
+
   @Column()
   phone: string;
+
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: 'roleId' })
   role: Role;
+
   @Column({ nullable: true })
   roleId: number;
+
   @OneToMany(() => Demande, (demande) => demande.createdBy)
   demandes: Demande[];
+
   @OneToMany(
     () => OrderTechnician,
     (orderTechnician) => orderTechnician.technician,
   )
   orderTechnician: OrderTechnician;
+
   @OneToMany(
     () => UserNotification,
     (userNotification) => userNotification.user,

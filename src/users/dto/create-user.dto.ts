@@ -44,4 +44,14 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPhoneNumber()
   phone: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  roleId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  teamId: string;
 }

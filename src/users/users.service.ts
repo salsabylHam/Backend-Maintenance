@@ -6,19 +6,29 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
+import { TeamService } from 'src/team/team.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly teamService: TeamService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
       const { confirmePassword, password, ...profile } = createUserDto;
+      let teams = [];
+
+      if (createUserDto.teamId) {
+        teams = await this.teamService.findAll({ id: createUserDto.teamId });
+      }
+
       const user = await this.usersRepository.save({
+        teams,
         ...profile,
+        roleId: profile.roleId ? +profile.roleId : null,
         password: password ? await bcrypt.hash(password, 10) : '',
       });
       return !!user;
@@ -61,7 +71,12 @@ export class UsersService {
           message: `No user found`,
         });
       }
-      return this.usersRepository.update(query, updateUserDto);
+
+      return this.usersRepository.save({
+        id: query.id,
+        ...updateUserDto,
+        roleId: parseInt(updateUserDto.roleId),
+      });
     } catch (err) {
       throw new CustomErrorException(err);
     }
