@@ -22,15 +22,10 @@ export class Demande {
   @Column()
   image: string;
   @Column()
-  damageGroupId: number;
-  @Column()
   damageCodeId: number;
   @ManyToOne(() => DamageCode, (damageCode) => damageCode.demandes)
   @JoinColumn({ name: 'damageCodeId' })
   damageCode: DamageCode;
-  @ManyToOne(() => DamageGroup, (damageGroup) => damageGroup.demandes)
-  @JoinColumn({ name: 'damageGroupId' })
-  damageGroup: DamageGroup;
   @Column()
   typeOfInterventions: string;
   @Column({ type: 'enum', enum: PRIORITY })

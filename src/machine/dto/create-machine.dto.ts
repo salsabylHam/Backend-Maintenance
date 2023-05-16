@@ -5,4 +5,7 @@ export class CreateMachineDto {
   @ApiProperty()
   @IsString()
   description: string;
+  @ApiProperty()
+  @IsString()
+  name: string;
 }
