@@ -36,7 +36,6 @@ export class TeamController {
   update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
     return this.teamService.update(+id, updateTeamDto);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.teamService.remove(+id);

@@ -15,6 +15,8 @@ export class Machine {
   @OneToMany(() => Demande, (demande) => demande.machine)
   demandes: Demande[];
   @Column()
+  name: string;
+  @Column()
   description: string;
   @ManyToMany(() => MachinePiece, (machinePiece) => machinePiece.machine)
   machinePiece: MachinePiece[];

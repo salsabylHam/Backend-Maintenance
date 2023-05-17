@@ -1,3 +1,4 @@
+import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
 import { Demande } from 'src/demande/entities/demande.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
@@ -10,6 +11,6 @@ export class DamageGroup {
   code: string;
   @Column()
   label: string;
-  @OneToMany(() => Demande, (demande) => demande.damageGroup)
-  demandes: Demande[];
+  @OneToMany(() => DamageCode, (damageCode) => damageCode.damageGroup)
+  damageCode: DamageCode[];
 }

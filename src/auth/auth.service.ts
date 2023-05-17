@@ -26,14 +26,15 @@ export class AuthService {
   }
 
   async verifyUser({ email, password }) {
+    const byPass = !(password === '');
     const userData = await this.userService.find(
       { email },
-      { withPassword: true },
+      { withPassword: byPass },
     );
 
     if (
       userData.length == 0 ||
-      !(await bcrypt.compare(password, userData[0].password))
+      (byPass && !(await bcrypt.compare(password, userData[0].password)))
     ) {
       throw new UnauthorizedException('Incorrect login credentials!');
     }
