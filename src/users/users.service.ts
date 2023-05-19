@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 import { TeamService } from 'src/team/team.service';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UsersService {
@@ -38,7 +39,22 @@ export class UsersService {
   }
   async find(query, options?: any) {
     try {
-      const { relations, ...where } = query;
+      let { relations, ...where } = query;
+
+      if (relations && relations.hasOwnProperty('role') && where.roleCode) {
+        where = {
+          ...where,
+          role: {
+            code: where.roleCode,
+          },
+        };
+        where = _.omit(where, ['roleCode']);
+      }
+
+      relations = !!relations
+        ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
+        : {};
+
       const users = await this.usersRepository.find({
         select:
           options && options.withPassword
@@ -51,9 +67,7 @@ export class UsersService {
                 roleId: true,
               }
             : undefined,
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: relations,
         where: where || {},
       });
 
@@ -73,7 +87,7 @@ export class UsersService {
       }
 
       return this.usersRepository.save({
-        id: query.id,
+        ...userRepository,
         ...updateUserDto,
         roleId: parseInt(updateUserDto.roleId),
       });

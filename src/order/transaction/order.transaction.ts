@@ -21,21 +21,25 @@ export class CreateOrderTransaction extends BaseTransaction<
   ): Promise<{
     orderId: number;
   }> {
-    const { demandeId, orderTechnichans } = orderDTO;
-    const order = await manager.create(Order, {
-      demandeId,
-    });
-    await manager.create(
-      OrderTechnician,
-      orderTechnichans.map((orderTechnichan) => {
-        return {
-          orderId: order.id,
-          ...orderTechnichan,
-        };
-      }),
-    );
-    return {
-      orderId: order.id,
-    };
+    try {
+      const { orderTechnichans, ...orderData } = orderDTO;
+      const order = await manager.save(Order, { ...orderData });
+
+      await manager.save(
+        OrderTechnician,
+        orderTechnichans.map((orderTechnichan) => {
+          return {
+            orderId: order.id,
+            userId: orderTechnichan,
+          } as any;
+        }),
+      );
+      return {
+        orderId: order.id,
+      };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 }

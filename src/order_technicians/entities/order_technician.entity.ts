@@ -12,17 +12,23 @@ import {
 export class OrderTechnician {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   userId: number;
+
   @ManyToOne(() => User, (user) => user.orderTechnician)
   @JoinColumn({ name: 'userId' })
   technician: User;
-  @Column()
+
+  @Column({ nullable: true })
   startDate: Date;
-  @Column()
+
+  @Column({ nullable: true })
   deadLigne: Date;
+
   @Column()
   orderId: number;
+
   @ManyToOne(() => Order, (order) => order.orderTechnician)
   @JoinColumn({ name: 'orderId' })
   order: Order;
