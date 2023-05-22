@@ -34,3 +34,9 @@ docker
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+#Terraform 
+*.tfvars
+*terraform*
+*.tfstate
+*.tfstate.*
