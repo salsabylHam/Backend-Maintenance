@@ -42,7 +42,10 @@ export class DemandeService {
           message: `No demande found with id ${id}`,
         });
       }
-      return this.demandeRepository.update({ id }, updateDemandeDto);
+      return this.demandeRepository.update(
+        { id },
+        this.demandeRepository.create(updateDemandeDto),
+      );
     } catch (err) {
       throw new CustomErrorException(err);
     }
