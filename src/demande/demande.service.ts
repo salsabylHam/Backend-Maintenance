@@ -14,7 +14,7 @@ export class DemandeService {
   ) {}
   create(demande: any) {
     try {
-      return this.demandeRepository.create(demande);
+      return this.demandeRepository.save(demande);
     } catch (err) {
       throw new CustomErrorException(err);
     }
@@ -23,10 +23,9 @@ export class DemandeService {
   find(query: any) {
     try {
       const { relations, ...where } = query;
+
       return this.demandeRepository.find({
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: relations,
         where: where || {},
       });
     } catch (err) {

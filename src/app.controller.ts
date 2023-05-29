@@ -2,28 +2,28 @@ import {
   Controller,
   Post,
   UseInterceptors,
-  UploadedFile,
   FileTypeValidator,
   ParseFilePipe,
+  UploadedFiles,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from './shared/helpers/storage.config';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', { storage }))
+  @UseInterceptors(FilesInterceptor('file', null, { storage }))
   uploadFile(
-    @UploadedFile(
+    @UploadedFiles(
       new ParseFilePipe({
         validators: [
           new FileTypeValidator({ fileType: /(jpg|jpeg|png|pdf)$/ }),
         ],
       }),
     )
-    file: any,
+    file: Express.Multer.File[],
   ) {
     return file;
   }

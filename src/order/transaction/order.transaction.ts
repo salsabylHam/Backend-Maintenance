@@ -22,15 +22,15 @@ export class CreateOrderTransaction extends BaseTransaction<
     orderId: number;
   }> {
     try {
-      const { orderTechnichans, ...orderData } = orderDTO;
+      const { orderTechnichan, ...orderData } = orderDTO;
       const order = await manager.save(Order, { ...orderData });
 
       await manager.save(
         OrderTechnician,
-        orderTechnichans.map((orderTechnichan) => {
+        orderTechnichan.map((technichan) => {
           return {
             orderId: order.id,
-            userId: orderTechnichan,
+            userId: technichan,
           } as any;
         }),
       );
