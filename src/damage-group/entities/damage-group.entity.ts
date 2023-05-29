@@ -5,12 +5,16 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 export class DamageGroup {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   description: string;
+
   @Column()
   code: string;
+
   @Column()
   label: string;
+
   @OneToMany(() => DamageCode, (damageCode) => damageCode.damageGroup)
   damageCode: DamageCode[];
 }

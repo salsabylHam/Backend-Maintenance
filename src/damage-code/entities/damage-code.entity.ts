@@ -13,17 +13,23 @@ import {
 export class DamageCode {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   description: string;
+
   @Column()
   code: string;
+
   @Column()
   name: string;
+
   @Column()
   damageGroupId: number;
+
   @ManyToOne(() => DamageGroup, (damageGroup) => damageGroup.damageCode)
   @JoinColumn({ name: 'damageGroupId' })
   damageGroup: DamageGroup;
+
   @OneToMany(() => Demande, (demande) => demande.damageCode)
   demandes: Demande[];
 }

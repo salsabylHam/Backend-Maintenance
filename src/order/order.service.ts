@@ -14,9 +14,11 @@ export class OrderService {
     private readonly orderRepository: Repository<Order>,
     private readonly createOrderTransaction: CreateOrderTransaction,
   ) {}
+
   async create(createOrderDto: CreateOrderDto) {
     try {
       const order = await this.createOrderTransaction.run(createOrderDto);
+
       return this.find({
         id: order.orderId,
         relations: {

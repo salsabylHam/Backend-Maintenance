@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
 
 export class CreateDemandeDto {
@@ -7,8 +7,8 @@ export class CreateDemandeDto {
   @IsString()
   description: string;
   @ApiProperty()
-  @IsString()
-  image: string;
+  @IsOptional()
+  files: any;
   @ApiProperty()
   @IsNumber()
   damageGroupId: number;

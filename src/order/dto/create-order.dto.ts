@@ -9,7 +9,7 @@ export class CreateOrderDto {
   demandeId: number;
 
   @IsNumber({}, { each: true })
-  orderTechnichans: number[];
+  orderTechnichan: number[];
 
   @ApiProperty()
   @IsEnum(InterventionType)
