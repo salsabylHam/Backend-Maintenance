@@ -31,7 +31,7 @@ export class User {
   @Column({ select: false, default: '' })
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
   @ManyToOne(() => Role, (role) => role.users)
