@@ -18,6 +18,7 @@ import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { TeamModule } from './team/team.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TeamModule } from './team/team.module';
     PermissionsModule,
     RolePermissionsModule,
     TeamModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
