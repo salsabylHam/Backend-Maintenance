@@ -107,19 +107,19 @@ export const technichanRolePermissions = [
 export const users = [
   {
     email: 'admin@admin.com',
-    password: '$2y$10$s2Z4EYY0eAUhBsaohKFrdeVm6wjnONqJtudEEdDAy5A9HE6aVeSjq',
+    password: '$2b$10$EPgV42OD1t4puYrhauhyKuPdwenwCAwFQyaFy1ROEqQNZxfMhDnKe',
     firstName: 'admin',
     lastName: 'admin',
   },
   {
     email: 'Tom@tech.com',
-    password: '$2y$10$gpaxpeiHyEe2mvDMoL8Bcenz4wuyimmIJ.9refZff0RUU5sHYenUe',
+    password: '$2b$10$lYEjg.rC6M6agHzDLZgiUOXyRE.z1.svo1YWqzPiZTYSx3SulzEI2',
     firstName: 'Tom',
     lastName: 'Edison',
   },
   {
     email: 'Benjamen@tech.com',
-    password: '$2y$10$hU6QD.SL0h6bMraSTMWNUeMrKoHs0BgMYT8jXNW8DCziuPw4CoIza',
+    password: '$2b$10$EkzfOVKs4cniAROXOx0DS.Z7kvwz7wfB82Wn6MA7rbclV9VMm2WDO',
     firstName: 'Benjamen',
     lastName: 'franklin',
   },
