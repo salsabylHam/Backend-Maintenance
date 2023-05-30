@@ -1,5 +1,5 @@
 import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
-import { DamageGroup } from 'src/damage-group/entities/damage-group.entity';
+import { File } from 'src/files/entities/file.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
 import { User } from 'src/users/entities/user.entity';
@@ -11,6 +11,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -59,6 +60,12 @@ export class Demande {
   @ManyToOne(() => Machine, (machine) => machine.demandes)
   @JoinColumn({ name: 'machineId' })
   machine: Machine;
+
+  @OneToMany(() => File, (file) => file.request, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
+  files: File[];
 
   @UpdateDateColumn({
     type: 'timestamp',
