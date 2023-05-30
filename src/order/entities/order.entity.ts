@@ -18,8 +18,12 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => OrderTechnician, (orderTechnician) => orderTechnician.order)
-  orderTechnician: OrderTechnician;
+  @OneToMany(
+    () => OrderTechnician,
+    (orderTechnician) => orderTechnician.order,
+    { cascade: true, orphanedRowAction: 'delete' },
+  )
+  orderTechnician: OrderTechnician[];
 
   @Column({ nullable: true })
   demandeId: number;

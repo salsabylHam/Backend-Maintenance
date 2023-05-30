@@ -24,8 +24,8 @@ export class MailService {
   async sendUserForgotPasswordUrl(user: User, token: string) {
     try {
       const url = `${this.configService.get(
-        'FRONTEND_DOMAIN',
-      )}/reset-password?code=${token}`;
+        'ALLOWED_ORIGIN',
+      )}/updatepassword?code=${token}`;
 
       await this.ses.send(
         new SendEmailCommand({

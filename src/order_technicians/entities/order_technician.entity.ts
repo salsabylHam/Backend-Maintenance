@@ -16,7 +16,10 @@ export class OrderTechnician {
   @Column()
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.orderTechnician)
+  @ManyToOne(() => User, (user) => user.orderTechnician, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'userId' })
   technician: User;
 
