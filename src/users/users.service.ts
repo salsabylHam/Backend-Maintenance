@@ -89,7 +89,9 @@ export class UsersService {
       return this.usersRepository.save({
         ...userRepository,
         ...updateUserDto,
-        roleId: parseInt(updateUserDto.roleId),
+        roleId: updateUserDto.roleId
+          ? parseInt(updateUserDto.roleId)
+          : userRepository.roleId,
       });
     } catch (err) {
       throw new CustomErrorException(err);

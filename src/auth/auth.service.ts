@@ -51,7 +51,7 @@ export class AuthService {
       await this.mailService.sendUserForgotPasswordUrl(users[0], token);
       return { status: 'success' };
     } else {
-      return new UnprocessableEntityException('User not found');
+      throw new UnprocessableEntityException('User not found');
     }
   }
 
@@ -65,7 +65,7 @@ export class AuthService {
       const email = this.jwtService.decode(data.token)['email'];
       const user = await this.userService.find({ email });
 
-      if (!user) {
+      if (!user.length) {
         throw new UnprocessableEntityException(
           'No user request to change the password with this link',
         );
@@ -79,7 +79,7 @@ export class AuthService {
       );
       return { status: 'success' };
     } catch (err) {
-      return new UnprocessableEntityException(err.message);
+      throw new UnprocessableEntityException(err.message);
     }
   }
 }

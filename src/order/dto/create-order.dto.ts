@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { InterventionType } from 'src/shared/enums/intervention-types.enum';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
@@ -9,7 +10,8 @@ export class CreateOrderDto {
   demandeId: number;
 
   @IsNumber({}, { each: true })
-  orderTechnichan: number[];
+  @IsOptional()
+  orderTechnician: number[];
 
   @ApiProperty()
   @IsEnum(InterventionType)
