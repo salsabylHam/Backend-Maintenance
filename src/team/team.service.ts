@@ -20,12 +20,7 @@ export class TeamService {
   findAll(query: any) {
     return this.teamRepository.find({
       where: _.omit(query, ['relations']),
-      relations: query.relations
-        ? query.relations.reduce((result, el) => {
-            result = { ...result, [el]: true };
-            return result;
-          }, {})
-        : {},
+      relations: query.relations ?? [],
     });
   }
 
