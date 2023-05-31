@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { InterventionType } from 'src/shared/enums/intervention-types.enum';
+import { OCCURRENCE } from 'src/shared/enums/occurrence.enum';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
 
 export class CreateOrderDto {
@@ -22,6 +23,11 @@ export class CreateOrderDto {
   priority: string;
 
   @ApiProperty()
+  @IsEnum(OCCURRENCE)
+  @IsOptional()
+  occurrence: string;
+
+  @ApiProperty()
   @IsString()
   note: string;
 
@@ -35,6 +41,7 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   endDate: string;
 
   @ApiProperty()
