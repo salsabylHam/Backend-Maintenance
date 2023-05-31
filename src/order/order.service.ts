@@ -39,9 +39,7 @@ export class OrderService {
     try {
       const { relations, ...where } = query;
       return this.orderRepository.find({
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: relations ?? [],
         where: where || {},
       });
     } catch (error) {
