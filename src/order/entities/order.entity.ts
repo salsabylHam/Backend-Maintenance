@@ -2,6 +2,7 @@ import { Demande } from 'src/demande/entities/demande.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
 import { InterventionType } from 'src/shared/enums/intervention-types.enum';
+import { OCCURRENCE } from 'src/shared/enums/occurrence.enum';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
 import {
   Column,
@@ -31,7 +32,7 @@ export class Order {
   @Column()
   startDate: string;
 
-  @Column()
+  @Column({ nullable: true })
   endDate: string;
 
   @Column({ type: 'enum', enum: InterventionType })
@@ -39,6 +40,9 @@ export class Order {
 
   @Column({ type: 'enum', enum: PRIORITY })
   priority: string;
+
+  @Column({ type: 'enum', enum: OCCURRENCE, nullable: true })
+  occurrence: string;
 
   @Column({ type: 'text' })
   note: string;
