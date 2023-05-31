@@ -58,7 +58,6 @@ export class Demande {
   machineId: number;
 
   @ManyToOne(() => Machine, (machine) => machine.demandes)
-  @JoinColumn({ name: 'machineId' })
   machine: Machine;
 
   @OneToMany(() => File, (file) => file.request, {
