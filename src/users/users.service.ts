@@ -19,15 +19,10 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { confirmePassword, password, ...profile } = createUserDto;
-      let teams = [];
-
-      if (createUserDto.teamId) {
-        teams = await this.teamService.findAll({ id: createUserDto.teamId });
-      }
 
       const user = await this.usersRepository.save({
-        teams,
         ...profile,
         roleId: profile.roleId ? +profile.roleId : null,
         password: password ? await bcrypt.hash(password, 10) : '',
@@ -39,9 +34,10 @@ export class UsersService {
   }
   async find(query, options?: any) {
     try {
+      // eslint-disable-next-line prefer-const
       let { relations, ...where } = query;
 
-      if (relations && relations.hasOwnProperty('role') && where.roleCode) {
+      if (relations && relations.includes('role') && where.roleCode) {
         where = {
           ...where,
           role: {
@@ -50,10 +46,6 @@ export class UsersService {
         };
         where = _.omit(where, ['roleCode']);
       }
-
-      relations = !!relations
-        ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-        : {};
 
       const users = await this.usersRepository.find({
         select:
@@ -78,6 +70,8 @@ export class UsersService {
   }
   async update(query: any, updateUserDto: UpdateUserDto) {
     try {
+      console.log(updateUserDto);
+
       const userRepository = await this.usersRepository.findOneBy(query);
       if (!userRepository) {
         throw new CustomErrorException({

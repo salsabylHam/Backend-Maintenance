@@ -28,7 +28,14 @@ export class AuthService {
   async verifyUser({ email, password }) {
     const byPass = !(password === '');
     const userData = await this.userService.find(
-      { email },
+      {
+        email,
+        relations: [
+          'role',
+          'role.rolePermissions',
+          'role.rolePermissions.permission',
+        ],
+      },
       { withPassword: byPass },
     );
 
