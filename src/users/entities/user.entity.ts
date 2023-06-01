@@ -56,7 +56,11 @@ export class User {
   )
   userNotification: UserNotification;
 
-  @ManyToMany(() => Team, { cascade: true })
+  @ManyToMany(() => Team, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   @JoinTable({
     name: 'user_team',
   })

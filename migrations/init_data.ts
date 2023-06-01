@@ -23,11 +23,17 @@ export const permissions = [
     label: 'Requests',
     code: 'REQUESTS',
   },
+  {
+    label: 'Orders',
+    code: 'ORDERS',
+  },
 ];
+
 export const roles = [
-  { label: 'admin role', code: 'ADMIN_ROLE' },
-  { label: 'technichan role', code: 'TECHNICHANS_ROLE' },
+  { label: 'Administrator', code: 'ADMIN_ROLE' },
+  { label: 'Technician', code: 'TECHNICIANS_ROLE' },
 ];
+
 export const adminRolePermissions = [
   {
     update: true,
@@ -65,7 +71,14 @@ export const adminRolePermissions = [
     create: true,
     read: true,
   },
+  {
+    update: true,
+    delete: true,
+    create: true,
+    read: true,
+  },
 ];
+
 export const technichanRolePermissions = [
   {
     update: false,
@@ -77,24 +90,30 @@ export const technichanRolePermissions = [
     update: false,
     delete: false,
     create: false,
-    read: true,
+    read: false,
   },
   {
     update: false,
     delete: false,
     create: false,
-    read: true,
+    read: false,
   },
   {
     update: false,
     delete: false,
     create: false,
-    read: true,
+    read: false,
   },
   {
     update: false,
     delete: false,
     create: false,
+    read: false,
+  },
+  {
+    update: true,
+    delete: true,
+    create: true,
     read: true,
   },
   {
@@ -104,6 +123,7 @@ export const technichanRolePermissions = [
     read: true,
   },
 ];
+
 export const users = [
   {
     email: 'admin@admin.com',

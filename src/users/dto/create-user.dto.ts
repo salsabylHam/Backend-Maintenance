@@ -15,10 +15,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   firstName: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -47,11 +49,9 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  roleId: string;
+  roleId: any;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  teamId: string;
+  teams: any[];
 }
