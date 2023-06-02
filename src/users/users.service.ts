@@ -70,8 +70,6 @@ export class UsersService {
   }
   async update(query: any, updateUserDto: UpdateUserDto) {
     try {
-      console.log(updateUserDto);
-
       const userRepository = await this.usersRepository.findOneBy(query);
       if (!userRepository) {
         throw new CustomErrorException({
