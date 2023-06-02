@@ -32,7 +32,10 @@ export class OrderTechnician {
   @Column()
   orderId: number;
 
-  @ManyToOne(() => Order, (order) => order.orderTechnician)
+  @ManyToOne(() => Order, (order) => order.orderTechnician, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'orderId' })
   order: Order;
 }

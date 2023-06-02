@@ -16,10 +16,12 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsEnum(InterventionType)
+  @IsOptional()
   typeOfInterventions: string;
 
   @ApiProperty()
   @IsEnum(PRIORITY)
+  @IsOptional()
   priority: string;
 
   @ApiProperty()
@@ -29,14 +31,17 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   note: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   description: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   startDate: string;
 
   @ApiProperty()
@@ -46,5 +51,6 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsNumber()
+  @IsOptional()
   machineId: number;
 }

@@ -62,35 +62,38 @@ export class OrderService {
         });
       }
 
-      queries.push(
-        this.orderTechnicianRepository.save(
-          updateOrderDto.orderTechnician
-            .filter(
-              (orderT) =>
-                !order[0].orderTechnician.find((el) => el.orderId == orderT),
-            )
-            .map((technichan) => {
-              return {
-                orderId: id,
-                userId: technichan,
-              } as any;
-            }),
-        ),
-      );
-      queries.push(
-        this.orderTechnicianRepository.delete({
-          id: In(
-            order[0].orderTechnician
+      if (updateOrderDto.orderTechnician) {
+        queries.push(
+          this.orderTechnicianRepository.save(
+            updateOrderDto.orderTechnician
               .filter(
                 (orderT) =>
-                  !updateOrderDto.orderTechnician.find(
-                    (el) => el == orderT.userId,
-                  ),
+                  !order[0].orderTechnician.find((el) => el.orderId == orderT),
               )
-              .map((orderT) => orderT.userId),
+              .map((technichan) => {
+                return {
+                  orderId: id,
+                  userId: technichan,
+                } as any;
+              }),
           ),
-        }),
-      );
+        );
+        queries.push(
+          this.orderTechnicianRepository.delete({
+            id: In(
+              order[0].orderTechnician
+                .filter(
+                  (orderT) =>
+                    !updateOrderDto.orderTechnician.find(
+                      (el) => el == orderT.userId,
+                    ),
+                )
+                .map((orderT) => orderT.userId),
+            ),
+          }),
+        );
+      }
+
       queries.push(
         this.orderRepository.save({
           ..._.omit(updateOrderDto, ['orderTechnician']),
