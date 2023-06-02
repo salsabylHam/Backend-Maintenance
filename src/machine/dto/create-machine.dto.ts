@@ -5,10 +5,16 @@ export class CreateMachineDto {
   @ApiProperty()
   @IsString()
   description: string;
+
   @ApiProperty()
   @IsString()
   name: string;
+
   @ApiProperty()
   @IsOptional()
   files: any;
+
+  @ApiProperty()
+  @IsOptional()
+  pieces: any[];
 }
