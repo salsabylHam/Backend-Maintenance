@@ -9,7 +9,6 @@ import { DamageCodeModule } from './damage-code/damage-code.module';
 import { MachineModule } from './machine/machine.module';
 import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
-import { MachinePicesModule } from './machine-pieces/machine-pieces.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderTechniciansModule } from './order_technicians/order_technicians.module';
 import { NotificationsModule } from './notifications/notifications.module';
@@ -30,7 +29,6 @@ import { FilesModule } from './files/files.module';
     MachineModule,
     PieceModule,
     DatabaseModule,
-    MachinePicesModule,
     AuthModule,
     OrderTechniciansModule,
     NotificationsModule,

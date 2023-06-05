@@ -12,6 +12,7 @@ export class MachineService {
     @InjectRepository(Machine)
     private readonly machineRepository: Repository<Machine>,
   ) {}
+
   create(createMachineDto: CreateMachineDto) {
     try {
       return this.machineRepository.save(createMachineDto);
@@ -41,7 +42,8 @@ export class MachineService {
           message: `No machine found with id ${id}`,
         });
       }
-      return this.machineRepository.update({ id }, updateMachineDto);
+
+      return this.machineRepository.save({ ...updateMachineDto, id });
     } catch (err) {
       throw new CustomErrorException(err);
     }
