@@ -27,6 +27,10 @@ export const permissions = [
     label: 'Orders',
     code: 'ORDERS',
   },
+  {
+    label: 'Pieces',
+    code: 'PIECES',
+  },
 ];
 
 export const roles = [
@@ -35,6 +39,12 @@ export const roles = [
 ];
 
 export const adminRolePermissions = [
+  {
+    update: true,
+    delete: true,
+    create: true,
+    read: true,
+  },
   {
     update: true,
     delete: true,
@@ -121,6 +131,12 @@ export const technichanRolePermissions = [
     delete: false,
     create: false,
     read: true,
+  },
+  {
+    update: false,
+    delete: false,
+    create: false,
+    read: false,
   },
 ];
 
