@@ -1,3 +1,5 @@
+import { File } from 'src/files/entities/file.entity';
+import { OrderTechnicianPieces } from 'src/order-technician-pieces/entities/order-technician-pieces.entity';
 import { Order } from 'src/order/entities/order.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -5,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,6 +18,9 @@ export class OrderTechnician {
 
   @Column()
   userId: number;
+
+  @Column({ type: 'text', nullable: true })
+  note: string;
 
   @ManyToOne(() => User, (user) => user.orderTechnician, {
     onDelete: 'CASCADE',
@@ -27,10 +33,17 @@ export class OrderTechnician {
   startDate: Date;
 
   @Column({ nullable: true })
-  deadLigne: Date;
+  endDate: Date;
 
   @Column()
   orderId: number;
+
+  @OneToMany(() => File, (file) => file.orderTechnician, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  files: File[];
 
   @ManyToOne(() => Order, (order) => order.orderTechnician, {
     onDelete: 'CASCADE',
@@ -38,4 +51,14 @@ export class OrderTechnician {
   })
   @JoinColumn({ name: 'orderId' })
   order: Order;
+
+  @OneToMany(
+    () => OrderTechnicianPieces,
+    (orderTechnicianPiece) => orderTechnicianPiece.orderTechnician,
+    {
+      onDelete: 'CASCADE',
+      orphanedRowAction: 'delete',
+    },
+  )
+  orderTechnicianPieces: OrderTechnicianPieces[];
 }

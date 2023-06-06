@@ -1,5 +1,6 @@
 import { File } from 'src/files/entities/file.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
+import { OrderTechnicianPieces } from 'src/order-technician-pieces/entities/order-technician-pieces.entity';
 import {
   Column,
   Entity,
@@ -40,4 +41,14 @@ export class Piece {
     orphanedRowAction: 'delete',
   })
   files: File[];
+
+  @OneToMany(
+    () => OrderTechnicianPieces,
+    (orderTechnicianPiece) => orderTechnicianPiece.piece,
+    {
+      onDelete: 'CASCADE',
+      orphanedRowAction: 'delete',
+    },
+  )
+  orderTechnicianPieces: OrderTechnicianPieces[];
 }
