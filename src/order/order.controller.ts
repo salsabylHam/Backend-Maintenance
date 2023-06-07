@@ -7,13 +7,17 @@ import {
   Param,
   Delete,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 @ApiTags('order')
 @Controller('order')
+@UseGuards(AuthGuard('jwt'))
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
@@ -23,8 +27,8 @@ export class OrderController {
   }
 
   @Get()
-  find(@Query() query) {
-    return this.orderService.find(query);
+  find(@Query() query, @Request() req: any) {
+    return this.orderService.find(query, req.user);
   }
 
   @Patch(':id')

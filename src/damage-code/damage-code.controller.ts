@@ -7,14 +7,17 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DamageCodeService } from './damage-code.service';
 import { CreateDamageCodeDto } from './dto/create-damage-code.dto';
 import { UpdateDamageCodeDto } from './dto/update-damage-code.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('damage-code')
 @Controller('damage-code')
+@UseGuards(AuthGuard('jwt'))
 export class DamageCodeController {
   constructor(private readonly damageCodeService: DamageCodeService) {}
 
