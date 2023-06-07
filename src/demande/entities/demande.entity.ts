@@ -1,6 +1,7 @@
 import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
 import { File } from 'src/files/entities/file.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
+import { Order } from 'src/order/entities/order.entity';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -65,6 +66,12 @@ export class Demande {
     orphanedRowAction: 'delete',
   })
   files: File[];
+
+  @OneToMany(() => Order, (file) => file.demande, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
+  orders: Order[];
 
   @UpdateDateColumn({
     type: 'timestamp',

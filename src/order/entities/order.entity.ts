@@ -57,7 +57,7 @@ export class Order {
   @JoinColumn({ name: 'machineId' })
   machine: Machine;
 
-  @OneToOne(() => Demande)
+  @ManyToOne(() => Demande)
   @JoinColumn({ name: 'demandeId' })
   demande: Demande;
 }

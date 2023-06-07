@@ -35,9 +35,18 @@ export class OrderService {
     }
   }
 
-  find(query) {
+  find(query, user?: any) {
     try {
       const { relations, ...where } = query;
+      if (where.myOrders) {
+        where.orderTechnician = { userId: user.id };
+
+        if (!relations.includes('orderTechnician')) {
+          relations.push('orderTechnician');
+        }
+
+        delete where.myOrders;
+      }
       return this.orderRepository.find({
         relations: relations ?? [],
         where: where || {},
