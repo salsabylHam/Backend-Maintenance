@@ -1,6 +1,7 @@
 import { Demande } from 'src/demande/entities/demande.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
+import { RequestPart } from 'src/request-parts/entities/request-part.entity';
 import { InterventionType } from 'src/shared/enums/intervention-types.enum';
 import { OCCURRENCE } from 'src/shared/enums/occurrence.enum';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
@@ -10,7 +11,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -60,4 +60,7 @@ export class Order {
   @ManyToOne(() => Demande)
   @JoinColumn({ name: 'demandeId' })
   demande: Demande;
+
+  @OneToMany(() => RequestPart, (requestPart) => requestPart.order)
+  requestedParts: RequestPart[];
 }

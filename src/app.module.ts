@@ -19,6 +19,7 @@ import { RolePermissionsModule } from './role-permissions/role-permissions.modul
 import { TeamModule } from './team/team.module';
 import { FilesModule } from './files/files.module';
 import { OrderTechnicianPiecesModule } from './order-technician-pieces/order-technician-pieces.module';
+import { RequestPartsModule } from './request-parts/request-parts.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { OrderTechnicianPiecesModule } from './order-technician-pieces/order-tec
     TeamModule,
     FilesModule,
     OrderTechnicianPiecesModule,
+    RequestPartsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,7 @@
 import { File } from 'src/files/entities/file.entity';
 import { OrderTechnicianPieces } from 'src/order-technician-pieces/entities/order-technician-pieces.entity';
 import { Order } from 'src/order/entities/order.entity';
+import { ORDER_STATUS } from 'src/shared/enums/order-status.enum';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -37,6 +38,9 @@ export class OrderTechnician {
 
   @Column()
   orderId: number;
+
+  @Column({ type: 'enum', enum: ORDER_STATUS, default: 'ToDo' })
+  status: string;
 
   @OneToMany(() => File, (file) => file.orderTechnician, {
     cascade: true,
