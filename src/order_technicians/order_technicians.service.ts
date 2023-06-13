@@ -31,8 +31,10 @@ export class OrderTechniciansService {
 
   async update(id: number, updateOrderTechnicianDto: UpdateOrderTechnicianDto) {
     try {
-      const orderTechnicians = await this.orderTechniciansRepository.findOneBy({
-        id,
+      const queries = [];
+      const orderTechnicians = await this.orderTechniciansRepository.findOne({
+        where: { id },
+        relations: ['orderTechnicianPieces'],
       });
 
       if (!orderTechnicians) {
@@ -42,7 +44,23 @@ export class OrderTechniciansService {
         });
       }
 
+      if (orderTechnicians.orderTechnicianPieces.length) {
+        orderTechnicians.orderTechnicianPieces
+          .filter(
+            (el) =>
+              !updateOrderTechnicianDto.pieces.find(
+                (piece) =>
+                  piece.orderTechnicianId != el.orderTechnicianId &&
+                  piece.pieceId != el.pieceId,
+              ),
+          )
+          .map((el) => {
+            queries.push(this.orderTechnicianPiecesRepository.delete(el));
+          });
+      }
+
       return Promise.all([
+        ...queries,
         this.orderTechnicianPiecesRepository.save(
           updateOrderTechnicianDto.pieces,
         ),

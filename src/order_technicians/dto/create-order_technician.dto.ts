@@ -1,10 +1,12 @@
 import {
   IsArray,
   IsDateString,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { ORDER_STATUS } from 'src/shared/enums/order-status.enum';
 
 export class CreateOrderTechnicianDto {
   @IsDateString()
@@ -28,4 +30,7 @@ export class CreateOrderTechnicianDto {
 
   @IsString()
   note: string;
+
+  @IsEnum(ORDER_STATUS)
+  status: string;
 }
