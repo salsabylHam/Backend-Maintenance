@@ -28,11 +28,17 @@ export class User {
   @Column()
   lastName: string;
 
+  @Column()
+  picture: string;
+
   @Column({ select: false, default: '' })
   password: string;
 
   @Column({ nullable: true })
   phone: string;
+
+  @Column({ nullable: true })
+  phone2: string;
 
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: 'roleId' })

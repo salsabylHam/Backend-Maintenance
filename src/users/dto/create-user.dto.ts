@@ -43,9 +43,17 @@ export class CreateUserDto {
   confirmePassword: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsPhoneNumber()
   phone: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsPhoneNumber()
+  phone2: string;
+
+  @ApiProperty()
+  @IsString()
+  picture: string;
 
   @ApiProperty()
   @IsOptional()
