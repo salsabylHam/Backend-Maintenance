@@ -31,6 +31,7 @@ export class AuthService {
       {
         email,
         relations: [
+          'teams',
           'role',
           'role.rolePermissions',
           'role.rolePermissions.permission',
