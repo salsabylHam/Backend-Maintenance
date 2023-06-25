@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderTechnicianDto } from './dto/create-order_technician.dto';
 import { UpdateOrderTechnicianDto } from './dto/update-order_technician.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderTechnician } from './entities/order_technician.entity';
 import { Repository } from 'typeorm';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
-
+import { OrderTechnicianPieces } from 'src/order-technician-pieces/entities/order-technician-pieces.entity';
+import * as _ from 'lodash';
 @Injectable()
 export class OrderTechniciansService {
   constructor(
     @InjectRepository(OrderTechnician)
     private readonly orderTechniciansRepository: Repository<OrderTechnician>,
+    @InjectRepository(OrderTechnicianPieces)
+    private readonly orderTechnicianPiecesRepository: Repository<OrderTechnicianPieces>,
   ) {}
 
   find(query: any) {
@@ -29,19 +31,44 @@ export class OrderTechniciansService {
 
   async update(id: number, updateOrderTechnicianDto: UpdateOrderTechnicianDto) {
     try {
-      const orderTechnicians = await this.orderTechniciansRepository.findOneBy({
-        id,
+      const queries = [];
+      const orderTechnicians = await this.orderTechniciansRepository.findOne({
+        where: { id },
+        relations: ['orderTechnicianPieces'],
       });
+
       if (!orderTechnicians) {
         throw new CustomErrorException({
           status: 404,
           message: `No orderTechnicians found with id ${id}`,
         });
       }
-      return this.orderTechniciansRepository.update(
-        { id },
-        updateOrderTechnicianDto,
-      );
+
+      if (orderTechnicians.orderTechnicianPieces.length) {
+        orderTechnicians.orderTechnicianPieces
+          .filter(
+            (el) =>
+              !updateOrderTechnicianDto.pieces.find(
+                (piece) =>
+                  piece.orderTechnicianId != el.orderTechnicianId &&
+                  piece.pieceId != el.pieceId,
+              ),
+          )
+          .map((el) => {
+            queries.push(this.orderTechnicianPiecesRepository.delete(el));
+          });
+      }
+
+      return Promise.all([
+        ...queries,
+        this.orderTechnicianPiecesRepository.save(
+          updateOrderTechnicianDto.pieces,
+        ),
+        this.orderTechniciansRepository.save({
+          ..._.omit(updateOrderTechnicianDto, ['pieces']),
+          id,
+        }),
+      ]);
     } catch (err) {
       throw new CustomErrorException(err);
     }

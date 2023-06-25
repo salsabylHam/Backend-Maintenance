@@ -9,7 +9,6 @@ import { DamageCodeModule } from './damage-code/damage-code.module';
 import { MachineModule } from './machine/machine.module';
 import { PieceModule } from './piece/piece.module';
 import { DatabaseModule } from './database/database.module';
-import { MachinePicesModule } from './machine-pieces/machine-pieces.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderTechniciansModule } from './order_technicians/order_technicians.module';
 import { NotificationsModule } from './notifications/notifications.module';
@@ -18,6 +17,9 @@ import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { TeamModule } from './team/team.module';
+import { FilesModule } from './files/files.module';
+import { OrderTechnicianPiecesModule } from './order-technician-pieces/order-technician-pieces.module';
+import { RequestPartsModule } from './request-parts/request-parts.module';
 
 @Module({
   imports: [
@@ -29,7 +31,6 @@ import { TeamModule } from './team/team.module';
     MachineModule,
     PieceModule,
     DatabaseModule,
-    MachinePicesModule,
     AuthModule,
     OrderTechniciansModule,
     NotificationsModule,
@@ -38,6 +39,9 @@ import { TeamModule } from './team/team.module';
     PermissionsModule,
     RolePermissionsModule,
     TeamModule,
+    FilesModule,
+    OrderTechnicianPiecesModule,
+    RequestPartsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

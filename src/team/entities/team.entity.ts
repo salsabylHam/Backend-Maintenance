@@ -18,7 +18,11 @@ export class Team {
   @Column()
   name: string;
 
-  @ManyToMany(() => User, { cascade: true })
+  @ManyToMany(() => User, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   @JoinTable({
     name: 'user_team',
   })

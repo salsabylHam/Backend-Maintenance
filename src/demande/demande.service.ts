@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDemandeDto } from './dto/create-demande.dto';
 import { UpdateDemandeDto } from './dto/update-demande.dto';
 import { Demande } from './entities/demande.entity';
 import { Repository } from 'typeorm';
@@ -12,9 +11,10 @@ export class DemandeService {
     @InjectRepository(Demande)
     private demandeRepository: Repository<Demande>,
   ) {}
+
   create(demande: any) {
     try {
-      return this.demandeRepository.create(demande);
+      return this.demandeRepository.save(demande);
     } catch (err) {
       throw new CustomErrorException(err);
     }
@@ -23,10 +23,9 @@ export class DemandeService {
   find(query: any) {
     try {
       const { relations, ...where } = query;
+
       return this.demandeRepository.find({
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: relations,
         where: where || {},
       });
     } catch (err) {
@@ -43,7 +42,9 @@ export class DemandeService {
           message: `No demande found with id ${id}`,
         });
       }
-      return this.demandeRepository.update({ id }, updateDemandeDto);
+      return this.demandeRepository.save(
+        this.demandeRepository.create({ ...updateDemandeDto, id }),
+      );
     } catch (err) {
       throw new CustomErrorException(err);
     }

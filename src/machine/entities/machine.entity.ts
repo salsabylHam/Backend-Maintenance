@@ -1,8 +1,10 @@
 import { Demande } from 'src/demande/entities/demande.entity';
-import { MachinePiece } from 'src/machine-pieces/entities/machine-pice.entity';
+import { File } from 'src/files/entities/file.entity';
+import { Piece } from 'src/piece/entities/piece.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -12,12 +14,29 @@ import {
 export class Machine {
   @PrimaryGeneratedColumn()
   id: number;
-  @OneToMany(() => Demande, (demande) => demande.machine)
-  demandes: Demande[];
+
   @Column()
   name: string;
+
   @Column()
   description: string;
-  @ManyToMany(() => MachinePiece, (machinePiece) => machinePiece.machine)
-  machinePiece: MachinePiece[];
+
+  @OneToMany(() => Demande, (demande) => demande.machine)
+  demandes: Demande[];
+
+  @ManyToMany(() => Piece, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  @JoinTable({
+    name: 'machine_piece',
+  })
+  pieces: Piece[];
+
+  @OneToMany(() => File, (file) => file.machine, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
+  files: File[];
 }

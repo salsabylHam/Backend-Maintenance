@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 import { TeamService } from 'src/team/team.service';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UsersService {
@@ -18,15 +19,10 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { confirmePassword, password, ...profile } = createUserDto;
-      let teams = [];
-
-      if (createUserDto.teamId) {
-        teams = await this.teamService.findAll({ id: createUserDto.teamId });
-      }
 
       const user = await this.usersRepository.save({
-        teams,
         ...profile,
         roleId: profile.roleId ? +profile.roleId : null,
         password: password ? await bcrypt.hash(password, 10) : '',
@@ -38,7 +34,19 @@ export class UsersService {
   }
   async find(query, options?: any) {
     try {
-      const { relations, ...where } = query;
+      // eslint-disable-next-line prefer-const
+      let { relations, ...where } = query;
+
+      if (relations && relations.includes('role') && where.roleCode) {
+        where = {
+          ...where,
+          role: {
+            code: where.roleCode,
+          },
+        };
+        where = _.omit(where, ['roleCode']);
+      }
+
       const users = await this.usersRepository.find({
         select:
           options && options.withPassword
@@ -51,9 +59,7 @@ export class UsersService {
                 roleId: true,
               }
             : undefined,
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: relations,
         where: where || {},
       });
 
@@ -73,9 +79,11 @@ export class UsersService {
       }
 
       return this.usersRepository.save({
-        id: query.id,
+        ...userRepository,
         ...updateUserDto,
-        roleId: parseInt(updateUserDto.roleId),
+        roleId: updateUserDto.roleId
+          ? parseInt(updateUserDto.roleId)
+          : userRepository.roleId,
       });
     } catch (err) {
       throw new CustomErrorException(err);

@@ -28,11 +28,17 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ select: false })
+  @Column()
+  picture: string;
+
+  @Column({ select: false, default: '' })
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
+
+  @Column({ nullable: true })
+  phone2: string;
 
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: 'roleId' })
@@ -56,7 +62,11 @@ export class User {
   )
   userNotification: UserNotification;
 
-  @ManyToMany(() => Team, { cascade: true })
+  @ManyToMany(() => Team, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   @JoinTable({
     name: 'user_team',
   })

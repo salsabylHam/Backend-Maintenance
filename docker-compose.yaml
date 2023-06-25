@@ -7,9 +7,28 @@ services:
       context: .
       target: development
       dockerfile: ./Dockerfile
-    # command: |
-    #   cd /usr/src/app
-    #   npm run start:dev
+    command: npm run start:dev
+    environment:
+      name: value
+      DB_HOST: mysqldb
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: maintenance_db
+      DB_PORT: 3306
+      JWT_SECRET: "#earea@ererazed1515"
+      ALLOWED_ORIGIN: http://localhost:5173
+      SES_ISLOCAL: true
+      SES_HOST: http://ses:8005
+      SES_REGION: aws-ses-v2-local
+      SES_FROM_EMAIL: maintenance@no-reply.com
+      S3_ISLOCAL: true
+      S3_HOSTNAME: minio
+      S3_PORT: 9000
+      S3_PROTOCOL: "http:"
+      S3_REGION: "us-west-2"
+      S3_ACCESSKEY: root
+      S3_SECRETKEY: root@root
+      S3_BUCKET_NAME: maintenance
     ports:
       - 4000:4000
       - 9229:9229

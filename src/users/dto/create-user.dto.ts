@@ -15,10 +15,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   firstName: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -41,17 +43,23 @@ export class CreateUserDto {
   confirmePassword: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsPhoneNumber()
   phone: string;
 
   @ApiProperty()
   @IsOptional()
+  @IsPhoneNumber()
+  phone2: string;
+
+  @ApiProperty()
   @IsString()
-  roleId: string;
+  picture: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  teamId: string;
+  roleId: any;
+
+  @ApiProperty()
+  @IsOptional()
+  teams: any[];
 }

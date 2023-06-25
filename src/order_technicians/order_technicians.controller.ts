@@ -1,18 +1,20 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { OrderTechniciansService } from './order_technicians.service';
 import { UpdateOrderTechnicianDto } from './dto/update-order_technician.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 @ApiTags('order-technicians')
 @Controller('order-technicians')
+@UseGuards(AuthGuard('jwt'))
 export class OrderTechniciansController {
   constructor(
     private readonly orderTechniciansService: OrderTechniciansService,
