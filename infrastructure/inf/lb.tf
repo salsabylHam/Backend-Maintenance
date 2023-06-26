@@ -8,7 +8,6 @@ resource "aws_security_group" "lb" {
     to_port     = 80
     cidr_blocks = ["0.0.0.0/0"]
   }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -49,7 +48,22 @@ resource "aws_lb_listener" "maintenance" {
     type             = "forward"
   }
 }
+resource "aws_lb_listener_rule" "static" {
+  listener_arn = aws_lb_listener.maintenance.arn
+  priority     = 100
 
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.maintenance.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/v1/*"]
+    }
+  }
+
+}
 output "load_balancer_ip" {
   value = aws_lb.default.dns_name
 }

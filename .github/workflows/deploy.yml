@@ -22,19 +22,7 @@ jobs:
       with:
         aws-region: ${{ secrets.AWS_REGION }}
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github
-    - run: aws sts get-caller-identity
-
-    - name: Get secrets by name 
-      uses: aws-actions/aws-secretsmanager-get-secrets@v1
-      with:
-        secret-ids: |
-          ${{ secrets.secret_envs }}
-          ${{ secrets.sit_creds }}  
-    - name: Adding env and secrets files 
-      run: |
-        echo $MODEL_CONVERTER_ENVS | base64 -d > .env
-        mkdir credentials 
-        echo $MODEL_CONVERTER_SECRETS | base64 -d > ./credentials/sit-key.json
+      run: aws sts get-caller-identity
         
     - name: Login to Amazon ECR
       id: login-ecr
@@ -44,7 +32,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: model-convertor-image-repo
+        ECR_REPOSITORY: maintenance-image-repo
         IMAGE_TAG: latest
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -52,20 +40,20 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
     - name: Download task definition
       run: |
-        aws ecs describe-task-definition --task-definition ecs-task-definition-model-convertor --query taskDefinition > task-definition.json
+        aws ecs describe-task-definition --task-definition ecs-task-definition-maintenance --query taskDefinition > task-definition.json
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: model-convertor-container
+        container-name: maintenance-container
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: model-convertor-service
-        cluster: ecs-cluster-model-convertor
+        service: maintenance-service
+        cluster: ecs-cluster-maintenance
         wait-for-service-stability: true

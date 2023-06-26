@@ -36,7 +36,7 @@ docker
 !.vscode/extensions.json
 
 #Terraform 
-*.tfvars
-*terraform*
-*.tfstate
-*.tfstate.*
+**/*.tfvars
+**/*terraform*
+**/*.tfstate
+**/*.tfstate.*
