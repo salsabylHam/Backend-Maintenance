@@ -14,8 +14,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           password: config.get('DB_PASSWORD'),
           database: config.get('DB_NAME'),
           port: config.get('DB_PORT'),
-          synchronize: true,
+          synchronize: false,
+          migrations: [__dirname + '/migrations/*.{ts,js}'],
           autoLoadEntities: true,
+          migrationsRun: true,
           //logging: 'all',
         };
       },
