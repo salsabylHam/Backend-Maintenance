@@ -49,7 +49,7 @@ variable "autoscaling_policy_name" {
 }
 variable "app_healthcheck_path" {
   description = "the health check path for the application"
-  default     = "/api/v1"
+  default     = "/api/v1/healthz"
   type        = string
 }
 variable "lb_tg_protocol" {
