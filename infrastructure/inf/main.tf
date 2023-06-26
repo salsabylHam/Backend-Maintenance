@@ -12,7 +12,7 @@ module "oidc_github" {
   source = "unfunco/oidc-github/aws"
 
   github_repositories = [
-    "datiumsas/maintenance-api"
+    "datiumsas/maintenance"
   ]
   iam_role_name = "github"
 }

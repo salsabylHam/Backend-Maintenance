@@ -12,14 +12,14 @@ resource "aws_secretsmanager_secret" "env_var" {
 resource "aws_secretsmanager_secret_version" "env_var" {
   secret_id = aws_secretsmanager_secret.env_var.id
   secret_string = jsonencode(
-    var.env_var
+    merge(var.env_var,{DB_HOST=module.db.db_instance_endpoint})
   )
 }
 locals {
   env_var_output = [
     for key, value in var.env_var : {
       name      = key
-      valueFrom = "${aws_secretsmanager_secret.env_var.arn}:${key}"
+      valueFrom = "${aws_secretsmanager_secret.env_var.arn}:${key}::"
     }
   ]
 }

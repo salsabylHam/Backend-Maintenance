@@ -46,7 +46,9 @@ resource "aws_iam_policy" "ecs_register_task_definition" {
         ],
         "Resource" : [
           "${aws_ecs_task_definition.maintenance-ecs-task-definition.arn}",
-          "${aws_iam_role.ecsTaskExecutionRole.arn}"
+          "${aws_iam_role.ecsTaskExecutionRole.arn}",
+          "${aws_iam_role.backend_role.arn}"
+
         ]
       },
       {
