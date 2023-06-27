@@ -5,6 +5,7 @@ import {
   FileTypeValidator,
   ParseFilePipe,
   UploadedFiles,
+  Get,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -12,7 +13,10 @@ import { storage } from './shared/helpers/storage.config';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
-
+  @Get('healthz')
+  healthz() {
+    return { status: 'success' };
+  }
   @Post('upload')
   @UseInterceptors(FilesInterceptor('file', null, { storage }))
   uploadFile(

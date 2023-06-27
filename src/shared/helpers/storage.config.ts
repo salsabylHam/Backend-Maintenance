@@ -4,14 +4,16 @@ import 'dotenv/config';
 
 export const s3client = new S3Client({
   forcePathStyle: true,
-  endpoint: {
-    protocol: process.env.S3_PROTOCOL,
-    hostname: process.env.S3_HOSTNAME,
-    port: process.env.S3_PORT,
-    path: '',
-  } as any,
+  endpoint: process.env.S3_IS_LOCAL
+    ? ({
+        protocol: process.env.S3_PROTOCOL,
+        hostname: process.env.S3_HOSTNAME,
+        port: process.env.S3_PORT,
+        path: '',
+      } as any)
+    : null,
   region: process.env.S3_REGION,
-  credentials: process.env.S3_ISLOCAL
+  credentials: process.env.S3_IS_LOCAL
     ? {
         accessKeyId: process.env.S3_ACCESSKEY,
         secretAccessKey: process.env.S3_SECRETKEY,
