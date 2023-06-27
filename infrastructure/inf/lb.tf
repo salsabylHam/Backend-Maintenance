@@ -24,7 +24,7 @@ resource "aws_lb" "default" {
 
 resource "aws_lb_target_group" "maintenance" {
   name        = "${var.app_name}-target-group"
-  port        = var.app_port
+  port        = 80
   protocol    = var.lb_tg_protocol
   vpc_id      = module.vpc.vpc_id
   target_type = "ip"

@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  maintenance:
+    container_name: maintenance
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    # command: npm run start:dev
+    environment:
+      DB_HOST: mysqldb
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: maintenance_db
+      DB_PORT: 3306
+      JWT_SECRET: "#earea@ererazed1515"
+      ALLOWED_ORIGIN: http://localhost:5173
+      SES_ISLOCAL: true
+      SES_HOST: http://ses:8005
+      SES_REGION: aws-ses-v2-local
+      SES_FROM_EMAIL: maintenance@no-reply.com
+      S3_ISLOCAL: true
+      S3_HOSTNAME: minio
+      S3_PORT: 9000
+      S3_PROTOCOL: "http:"
+      S3_REGION: "us-west-2"
+      S3_ACCESSKEY: root
+      S3_SECRETKEY: root@root
+      S3_BUCKET_NAME: maintenance
+    ports:
+      - 4000:4000
+      - 9229:9229
+    networks:
+      - maintenance-network
+    # volumes:
+    #   - .:/usr/src/app
+    #   - /usr/src/app/node_modules
+    restart: always
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    image: mysql:latest
+    container_name: mysqldb
+    hostname: mysqldb
+    restart: always
+    environment:
+      MYSQL_DATABASE: maintenance_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_READ_BUFFER_SIZE: 4M
+      MYSQL_SORT_BUFFER_SIZE: 4M
+      MYSQL_KEY_BUFFER_SIZE: 64M
+      MYSQL_INNODB_BUFFER_POOL_SIZE: 64M
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./docker/data/mysqldb:/var/lib/mysql
+      - ./docker/logs/mysqldb:/var/log/mysql
+    networks:
+      - maintenance-network
+  ses:
+    image: node:16.14-alpine
+    entrypoint: ["/bin/sh","-c"]
+    command: 
+      - |
+        npm install -g aws-ses-v2-local
+        aws-ses-v2-local --host 0.0.0.0 --port 8005
+    ports:
+      - '8005:8005'
+    expose:
+      - '8005'
+    networks:
+      - maintenance-network
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./docker/data/minio:/data
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: root@root
+    command: server /data --console-address :9001
+  createbucket:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: root@root
+    entrypoint: ["/bin/sh","-c"]
+    command: 
+      - |
+        /usr/bin/mc config host add --api s3v4 s3 http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}
+        /usr/bin/mc mb s3/maintenance/
+      
+  adminer:
+    image: adminer
+    container_name: adminer
+    depends_on:
+      - mysqldb
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: mysql
+      ADMINER_DEFAULT_DB_HOST: mysqldb
+      ADMINER_DEFAULT_DB_NAME: maintenance_db
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: tables-filter tinymce
+    ports:
+      - 8080:8080
+    networks:
+      - maintenance-network
+networks:
+  maintenance-network:

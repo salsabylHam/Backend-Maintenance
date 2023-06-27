@@ -12,12 +12,12 @@ resource "aws_secretsmanager_secret" "env_var" {
 resource "aws_secretsmanager_secret_version" "env_var" {
   secret_id = aws_secretsmanager_secret.env_var.id
   secret_string = jsonencode(
-    merge(var.env_var,{DB_HOST=module.db.db_instance_address})
+    merge(var.env_var, { DB_HOST = module.db.db_instance_address })
   )
 }
 locals {
   env_var_output = [
-    for key, value in merge(var.env_var,{DB_HOST=module.db.db_instance_address}) : {
+    for key, value in merge(var.env_var, { DB_HOST = module.db.db_instance_address }) : {
       name      = key
       valueFrom = "${aws_secretsmanager_secret.env_var.arn}:${key}::"
     }
@@ -25,7 +25,7 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "maintenance-ecs-task-definition" {
-  task_role_arn            = aws_iam_role.backend_role.arn
+  task_role_arn = aws_iam_role.backend_role.arn
   container_definitions = jsonencode([
     {
       name      = "${var.app_name}-container"
@@ -91,6 +91,18 @@ resource "aws_security_group" "maintenance_task" {
   name   = "${var.app_name}-task-security-group"
   vpc_id = module.vpc.vpc_id
 
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.lb.id}"]
+  }
+  ingress {
+    from_port       = 32768
+    to_port         = 65535
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.lb.id}"]
+  }
   ingress {
     protocol        = "tcp"
     from_port       = var.app_port
