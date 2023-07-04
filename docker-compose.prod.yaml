@@ -5,9 +5,9 @@ services:
     container_name: maintenance
     build:
       context: .
-      target: development
+      target: production
       dockerfile: ./Dockerfile
-    command: npm run start:dev
+    # command: npm run start:dev
     environment:
       DB_HOST: mysqldb
       DB_USERNAME: root
@@ -33,9 +33,9 @@ services:
       - 9229:9229
     networks:
       - maintenance-network
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+    # volumes:
+    #   - .:/usr/src/app
+    #   - /usr/src/app/node_modules
     restart: always
     depends_on:
       - mysqldb
