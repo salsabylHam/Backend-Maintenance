@@ -1,4 +1,5 @@
 import AppModules from './app-modules.enum';
 import Permission from './permission.enum';
 import { PRIORITY } from './priority.enums';
-export default { Permission, AppModules, PRIORITY };
+import { EVENT_TYPE } from './event-type.enums';
+export default { Permission, AppModules, PRIORITY, EVENT_TYPE };
