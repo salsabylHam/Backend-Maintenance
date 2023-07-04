@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -6,15 +6,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
-import { TeamService } from 'src/team/team.service';
 import * as _ from 'lodash';
+import { MailService } from 'src/mail/mail.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private readonly teamService: TeamService,
+    private readonly mailService: MailService,
+    private readonly authService: AuthService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -27,11 +29,15 @@ export class UsersService {
         roleId: profile.roleId ? +profile.roleId : null,
         password: password ? await bcrypt.hash(password, 10) : '',
       });
+
+      const token = this.authService.sign({ email: user.email });
+      this.mailService.sendUserForgotPasswordUrl(user, token);
       return !!user;
     } catch (error) {
       throw new CustomErrorException(error);
     }
   }
+
   async find(query, options?: any) {
     try {
       // eslint-disable-next-line prefer-const
@@ -68,6 +74,7 @@ export class UsersService {
       throw new CustomErrorException(error);
     }
   }
+
   async update(query: any, updateUserDto: UpdateUserDto) {
     try {
       const userRepository = await this.usersRepository.findOneBy(query);
@@ -89,6 +96,7 @@ export class UsersService {
       throw new CustomErrorException(err);
     }
   }
+
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
   }
