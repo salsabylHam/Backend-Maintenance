@@ -5,13 +5,20 @@ import {
   FileTypeValidator,
   ParseFilePipe,
   UploadedFiles,
+  Get,
+  Res,
+  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from './shared/helpers/storage.config';
+import { FilesService } from './files/files.service';
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private fileService: FilesService,
+  ) {}
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('file', null, { storage }))
@@ -26,5 +33,14 @@ export class AppController {
     file: Express.Multer.File[],
   ) {
     return file;
+  }
+
+  @Get('preview')
+  async downloadFile(@Res() res: any, @Query() query: any) {
+    try {
+      return this.fileService.getFile(query, res);
+    } catch (error) {
+      throw new Error('Error download file from S3');
+    }
   }
 }
