@@ -20,6 +20,7 @@ import { TeamModule } from './team/team.module';
 import { FilesModule } from './files/files.module';
 import { OrderTechnicianPiecesModule } from './order-technician-pieces/order-technician-pieces.module';
 import { RequestPartsModule } from './request-parts/request-parts.module';
+import { LeaveAbsenceRequestModule } from './leave-absence-request/leave-absence-request.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { RequestPartsModule } from './request-parts/request-parts.module';
     FilesModule,
     OrderTechnicianPiecesModule,
     RequestPartsModule,
+    LeaveAbsenceRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
