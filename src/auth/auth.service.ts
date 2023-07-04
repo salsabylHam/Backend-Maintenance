@@ -2,6 +2,8 @@ import {
   Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -11,6 +13,7 @@ import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
@@ -89,5 +92,9 @@ export class AuthService {
     } catch (err) {
       throw new UnprocessableEntityException(err.message);
     }
+  }
+
+  sign(payload: any) {
+    return this.jwtService.sign(payload);
   }
 }

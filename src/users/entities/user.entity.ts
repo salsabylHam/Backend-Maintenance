@@ -28,7 +28,7 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ nullable: true })
   picture: string;
 
   @Column({ select: false, default: '' })

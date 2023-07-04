@@ -53,6 +53,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   picture: string;
 
   @ApiProperty()
