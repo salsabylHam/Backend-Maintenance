@@ -1,7 +1,7 @@
 export const permissions = [
   {
-    label: 'User',
-    code: 'USER',
+    label: 'Technician',
+    code: 'TECHNICIAN',
   },
   {
     label: 'Team',
@@ -31,6 +31,10 @@ export const permissions = [
     label: 'Pieces',
     code: 'PIECES',
   },
+  {
+    label: 'Leave Requests',
+    code: 'LEAVE_REQUESTS',
+  },
 ];
 
 export const roles = [
@@ -40,6 +44,12 @@ export const roles = [
 ];
 
 export const adminRolePermissions = [
+  {
+    update: true,
+    delete: true,
+    create: true,
+    read: true,
+  },
   {
     update: true,
     delete: true,
@@ -139,6 +149,12 @@ export const technichanRolePermissions = [
     create: false,
     read: false,
   },
+  {
+    update: false,
+    delete: false,
+    create: false,
+    read: false,
+  },
 ];
 
 export const managerRolePermissions = [
@@ -171,6 +187,12 @@ export const managerRolePermissions = [
     delete: false,
     create: false,
     read: false,
+  },
+  {
+    update: true,
+    delete: true,
+    create: true,
+    read: true,
   },
   {
     update: true,

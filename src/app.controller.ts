@@ -15,7 +15,6 @@ import { storage } from './shared/helpers/storage.config';
 import { FilesService } from './files/files.service';
 @Controller()
 export class AppController {
-  
   constructor(
     private readonly appService: AppService,
     private fileService: FilesService,
