@@ -41,9 +41,16 @@ USER node
 ###################
 
 FROM node:18-alpine As production
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    && pip3 install --upgrade pip \
+    && pip3 install --no-cache-dir \
+    awscli \
+    && rm -rf /var/cache/apk/*
 
+RUN aws --version
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-
 
 CMD [ "/bin/sh","-c", "node --require ts-node/register /node_modules/typeorm/cli migration:run -d /dist/typeOrm.config.js && node /dist/src/main" ]
