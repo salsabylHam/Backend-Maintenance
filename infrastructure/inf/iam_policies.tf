@@ -113,13 +113,13 @@ resource "aws_iam_role_policy_attachment" "maintenance_secrets_policy_attachment
 # Create IAM role for ECS backend service
 data "aws_iam_policy_document" "backend_assume_role_policy" {
   statement {
-    sid = ""
+    sid    = ""
     effect = "Allow"
     actions = [
       "sts:AssumeRole",
     ]
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
@@ -127,14 +127,24 @@ data "aws_iam_policy_document" "backend_assume_role_policy" {
 
 resource "aws_iam_role" "backend_role" {
   name               = "backend-ecs-role"
-  assume_role_policy = "${data.aws_iam_policy_document.backend_assume_role_policy.json}"
+  assume_role_policy = data.aws_iam_policy_document.backend_assume_role_policy.json
 }
 data "aws_iam_policy_document" "maintenance_backend_task_role" {
   statement {
     effect    = "Allow"
-    actions   = ["s3:*"]
+    actions   = ["s3:ListBucket"]
     resources = [aws_s3_bucket.maintenance.arn]
   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject"
+    ]
+    resources = ["${aws_s3_bucket.maintenance.arn}/*"]
+  }
+
   statement {
     effect    = "Allow"
     actions   = ["ses:*"]

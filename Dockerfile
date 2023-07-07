@@ -53,4 +53,4 @@ RUN aws --version
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
-CMD [ "/bin/sh","-c", "aws s3 ls && node --require ts-node/register /node_modules/typeorm/cli migration:run -d /dist/typeOrm.config.js && node /dist/src/main" ]
+CMD [ "/bin/sh","-c", "node --require ts-node/register /node_modules/typeorm/cli migration:run -d /dist/typeOrm.config.js && node /dist/src/main" ]
