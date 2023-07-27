@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { User } from 'src/users/entities/user.entity';
 import { join } from 'path';
 import { MailerService } from '@nestjs-modules/mailer';
+import { google } from 'googleapis';
+import { Options } from 'nodemailer/lib/smtp-transport';
 import * as ejs from 'ejs';
 
 @Injectable()
@@ -27,8 +29,43 @@ export class MailService {
     }
   }
 
+  private async setTransport() {
+    const OAuth2 = google.auth.OAuth2;
+    const oauth2Client = new OAuth2(
+      this.configService.get('CLIENT_ID'),
+      this.configService.get('CLIENT_SECRET'),
+      'https://developers.google.com/oauthplayground',
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.REFRESH_TOKEN,
+    });
+
+    const accessToken: string = await new Promise((resolve, reject) => {
+      oauth2Client.getAccessToken((err, token) => {
+        if (err) {
+          reject('Failed to create access token');
+        }
+        resolve(token);
+      });
+    });
+
+    const config: Options = {
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: this.configService.get('EMAIL'),
+        clientId: this.configService.get('CLIENT_ID'),
+        clientSecret: this.configService.get('CLIENT_SECRET'),
+        accessToken,
+      },
+    };
+    this.mailerService.addTransporter('gmail', config);
+  }
+
   async sendUserForgotPasswordUrl(user: User, token: string) {
     try {
+      await this.setTransport();
       const url = `${this.configService.get(
         'ALLOWED_ORIGIN',
       )}/updatepassword?code=${token}`;
@@ -59,6 +96,7 @@ export class MailService {
         );
       } else {
         await this.mailerService.sendMail({
+          transporterName: 'gmail',
           to: user.email,
           from: this.configService.get('EMAIL'),
           subject: 'Reset password',
