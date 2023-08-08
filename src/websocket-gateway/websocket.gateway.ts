@@ -4,16 +4,43 @@ import {
   SubscribeMessage,
   MessageBody,
   ConnectedSocket,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { NotificationsService } from './notifications.service';
-import { CreateNotificationDto } from './dto/create-notification.dto';
 import { Server, Socket } from 'socket.io';
+import { Logger, forwardRef, Inject } from '@nestjs/common';
+import { WebsocketGatewayService } from './websocket-gateway.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { CreateNotificationDto } from 'src/notifications/dto/create-notification.dto';
 
-@WebSocketGateway()
-export class NotificationsGateway {
+@WebSocketGateway({
+  cors: {
+    origin: process.env.ALLOWED_ORIGIN,
+  },
+})
+export class WebSocketGatewayGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer() server: Server;
+  private logger: Logger = new Logger('AppGateway');
+  constructor(
+    private readonly websocketGatewayService: WebsocketGatewayService,
+    @Inject(forwardRef(() => NotificationsService))
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
-  constructor(private readonly notificationsService: NotificationsService) {}
+  afterInit(server: Server) {
+    this.websocketGatewayService.wsServer = server;
+  }
+
+  handleDisconnect(client: Socket) {
+    this.logger.log(`Client disconnected: ${client.id}`);
+  }
+
+  handleConnection(client: Socket, ...args: any[]) {
+    this.logger.log(`Client connected: ${client.id}`);
+  }
 
   @SubscribeMessage('createNotification')
   async create(@MessageBody() createNotificationDto: CreateNotificationDto) {

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 import { OrderTechnicianPieces } from 'src/order-technician-pieces/entities/order-technician-pieces.entity';
 import * as _ from 'lodash';
+import { WebsocketGatewayService } from 'src/websocket-gateway/websocket-gateway.service';
 @Injectable()
 export class OrderTechniciansService {
   constructor(
@@ -13,6 +14,7 @@ export class OrderTechniciansService {
     private readonly orderTechniciansRepository: Repository<OrderTechnician>,
     @InjectRepository(OrderTechnicianPieces)
     private readonly orderTechnicianPiecesRepository: Repository<OrderTechnicianPieces>,
+    private readonly webSocketGatewayService: WebsocketGatewayService,
   ) {}
 
   find(query: any) {
@@ -68,7 +70,12 @@ export class OrderTechniciansService {
           ..._.omit(updateOrderTechnicianDto, ['pieces']),
           id,
         }),
-      ]);
+      ]).then(() => {
+        this.webSocketGatewayService.emitEventWithWS(
+          'updateNotificationBadges',
+          true,
+        );
+      });
     } catch (err) {
       throw new CustomErrorException(err);
     }

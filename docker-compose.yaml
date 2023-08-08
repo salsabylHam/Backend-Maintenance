@@ -20,7 +20,7 @@ services:
       SES_HOST: http://ses:8005
       SES_REGION: aws-ses-v2-local
       SES_FROM_EMAIL: maintenance@no-reply.com
-      S3_ISLOCAL: true
+      S3_IS_LOCAL: true
       S3_HOSTNAME: minio
       S3_PORT: 9000
       S3_PROTOCOL: "http:"

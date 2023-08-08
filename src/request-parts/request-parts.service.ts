@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RequestPart } from './entities/request-part.entity';
 import { Repository } from 'typeorm';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
+import { WebsocketGatewayService } from 'src/websocket-gateway/websocket-gateway.service';
 
 @Injectable()
 export class RequestPartsService {
   constructor(
     @InjectRepository(RequestPart)
     private readonly requestPartRepository: Repository<RequestPart>,
+    private readonly webSocketGatewayService: WebsocketGatewayService,
   ) {}
 
   createOrUpdate(createRequestPartDto: CreateRequestPartDto[], user: any) {
@@ -26,7 +28,12 @@ export class RequestPartsService {
         );
       }
 
-      return Promise.all(queries);
+      return Promise.all(queries).then(() => {
+        this.webSocketGatewayService.emitEventWithWS(
+          'updateNotificationBadges',
+          true,
+        );
+      });
     } catch (err) {
       throw new CustomErrorException(err);
     }

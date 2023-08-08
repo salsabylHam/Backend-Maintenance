@@ -35,13 +35,19 @@ export class Order {
   @Column({ nullable: true })
   endDate: string;
 
+  @Column({ nullable: true })
+  createOrderBefore: number;
+
+  @Column({ nullable: true })
+  orderId: number;
+
   @Column({ type: 'enum', enum: InterventionType })
   typeOfInterventions: string;
 
   @Column({ type: 'enum', enum: PRIORITY })
   priority: string;
 
-  @Column({ type: 'enum', enum: OCCURRENCE, nullable: true })
+  @Column({ type: 'enum', enum: OCCURRENCE, default: 'Once' })
   occurrence: string;
 
   @Column({ type: 'text' })
@@ -53,6 +59,9 @@ export class Order {
   @Column()
   machineId: number;
 
+  @Column({ nullable: true })
+  duration: number;
+
   @ManyToOne(() => Machine)
   @JoinColumn({ name: 'machineId' })
   machine: Machine;
@@ -63,4 +72,17 @@ export class Order {
 
   @OneToMany(() => RequestPart, (requestPart) => requestPart.order)
   requestedParts: RequestPart[];
+
+  @OneToMany(() => Order, (order) => order.parentOrder, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
+  subOrders: Order[];
+
+  @ManyToOne(() => Order, (order) => order.subOrders, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  @JoinColumn({ name: 'orderId' })
+  parentOrder: Order;
 }

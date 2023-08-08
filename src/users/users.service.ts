@@ -63,6 +63,9 @@ export class UsersService {
                 firstName: true,
                 lastName: true,
                 roleId: true,
+                picture: true,
+                phone2: true,
+                phone: true,
               }
             : undefined,
         relations: relations,

@@ -54,7 +54,7 @@ export class User {
     () => OrderTechnician,
     (orderTechnician) => orderTechnician.technician,
   )
-  orderTechnician: OrderTechnician;
+  orderTechnician: OrderTechnician[];
 
   @OneToMany(
     () => UserNotification,

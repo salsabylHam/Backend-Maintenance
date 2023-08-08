@@ -10,6 +10,10 @@ export class CreateOrderDto {
   @IsOptional()
   demandeId: number;
 
+  @IsNumber()
+  @IsOptional()
+  createOrderBefore: number;
+
   @IsNumber({}, { each: true })
   @IsOptional()
   orderTechnician: number[];

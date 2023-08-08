@@ -21,6 +21,10 @@ import { FilesModule } from './files/files.module';
 import { OrderTechnicianPiecesModule } from './order-technician-pieces/order-technician-pieces.module';
 import { RequestPartsModule } from './request-parts/request-parts.module';
 import { LeaveAbsenceRequestModule } from './leave-absence-request/leave-absence-request.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskSchedulingModule } from './task-scheduling/task-scheduling.module';
+import { WebsocketGatewayModule } from './websocket-gateway/websocket-gateway.module';
+import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 
 @Module({
   imports: [
@@ -44,6 +48,10 @@ import { LeaveAbsenceRequestModule } from './leave-absence-request/leave-absence
     OrderTechnicianPiecesModule,
     RequestPartsModule,
     LeaveAbsenceRequestModule,
+    ScheduleModule.forRoot(),
+    TaskSchedulingModule,
+    WebsocketGatewayModule,
+    TimeTrackingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

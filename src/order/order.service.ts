@@ -8,6 +8,7 @@ import { CreateOrderTransaction } from './transaction/order.transaction';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 import * as _ from 'lodash';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
+import { WebsocketGatewayService } from 'src/websocket-gateway/websocket-gateway.service';
 
 @Injectable()
 export class OrderService {
@@ -17,12 +18,17 @@ export class OrderService {
     @InjectRepository(OrderTechnician)
     private readonly orderTechnicianRepository: Repository<OrderTechnician>,
     private readonly createOrderTransaction: CreateOrderTransaction,
+    private readonly webSocketGatewayService: WebsocketGatewayService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
     try {
       const order = await this.createOrderTransaction.run(createOrderDto);
 
+      this.webSocketGatewayService.emitEventWithWS(
+        'updateNotificationBadges',
+        true,
+      );
       return this.find({
         id: order.orderId,
         relations: {
@@ -108,6 +114,11 @@ export class OrderService {
           ..._.omit(updateOrderDto, ['orderTechnician']),
           id,
         }),
+      );
+
+      this.webSocketGatewayService.emitEventWithWS(
+        'updateNotificationBadges',
+        true,
       );
 
       return await Promise.all(queries)[2];
