@@ -27,7 +27,6 @@ import { WebsocketGatewayModule } from './websocket-gateway/websocket-gateway.mo
 import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 import { StatistiquesModule } from './statistiques/statistiques.module';
 
-
 @Module({
   imports: [
     UsersModule,
