@@ -25,6 +25,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TaskSchedulingModule } from './task-scheduling/task-scheduling.module';
 import { WebsocketGatewayModule } from './websocket-gateway/websocket-gateway.module';
 import { TimeTrackingModule } from './time-tracking/time-tracking.module';
+import { StatistiquesModule } from './statistiques/statistiques.module';
+
 
 @Module({
   imports: [
@@ -52,6 +54,7 @@ import { TimeTrackingModule } from './time-tracking/time-tracking.module';
     TaskSchedulingModule,
     WebsocketGatewayModule,
     TimeTrackingModule,
+    StatistiquesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

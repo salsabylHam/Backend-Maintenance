@@ -15,6 +15,6 @@ import { WebsocketGatewayModule } from 'src/websocket-gateway/websocket-gateway.
   ],
   controllers: [OrderController],
   providers: [OrderService, CreateOrderTransaction],
-  exports: [OrderService],
+  exports: [OrderService, TypeOrmModule],
 })
 export class OrderModule {}
