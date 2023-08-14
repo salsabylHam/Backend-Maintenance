@@ -35,6 +35,10 @@ export const permissions = [
     label: 'Leave Requests',
     code: 'LEAVE_REQUESTS',
   },
+  {
+    label: 'Time Tracking	',
+    code: 'TIMETRACKING',
+  },
 ];
 
 export const roles = [
@@ -44,6 +48,12 @@ export const roles = [
 ];
 
 export const adminRolePermissions = [
+  {
+    update: true,
+    delete: true,
+    create: true,
+    read: true,
+  },
   {
     update: true,
     delete: true,
@@ -155,6 +165,12 @@ export const technichanRolePermissions = [
     create: false,
     read: false,
   },
+  {
+    update: false,
+    delete: false,
+    create: false,
+    read: false,
+  },
 ];
 
 export const managerRolePermissions = [
@@ -212,6 +228,12 @@ export const managerRolePermissions = [
     create: true,
     read: true,
   },
+  {
+    update: false,
+    delete: false,
+    create: false,
+    read: false,
+  },
 ];
 
 export const users = [
@@ -242,5 +264,51 @@ export const users = [
     firstName: 'John',
     lastName: 'Doe',
     picture: null,
+  },
+];
+
+export const damage_code = [
+  {
+    description: 'lorem impsum',
+    code: 'A02',
+    name: 'Electrical Object Part',
+    g_code: 'damage_electrical',
+  },
+  {
+    description: 'lorem impsum',
+    code: 'P25',
+    name: 'Open Circuit',
+    g_code: 'damage_electrical',
+  },
+  {
+    description: 'lorem impsum',
+    code: 'A04',
+    name: 'Hydraulic Object Part',
+    g_code: 'damage_mechanical',
+  },
+  {
+    description: 'lorem ipsum',
+    code: 'P01',
+    name: 'Abnormal condition',
+    g_code: 'damage_electrical',
+  },
+  {
+    description: 'lorem impsum',
+    code: 'P08',
+    name: 'Clogged',
+    g_code: 'damage_mechanical',
+  },
+];
+
+export const damage_group = [
+  {
+    description: 'lorem impsum',
+    code: 'damage_mechanical',
+    label: 'Mechanical damage',
+  },
+  {
+    description: 'lorem impsum',
+    code: 'damage_electrical',
+    label: 'Electrical damage',
   },
 ];

@@ -5,6 +5,8 @@ import {
   roles,
   technichanRolePermissions,
   users,
+  damage_code,
+  damage_group,
 } from './init_data';
 import * as _ from 'lodash';
 
@@ -43,6 +45,7 @@ export class InitRolesAndUsers1685372967482 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await this.setDefault(queryRunner, 'permission', permissions);
     await this.setDefault(queryRunner, 'role', roles);
+    await this.setDefault(queryRunner, 'damage_group', damage_group);
 
     const adminRole = (
       await queryRunner.query('select * from role where code = ?', [
@@ -94,6 +97,21 @@ export class InitRolesAndUsers1685372967482 implements MigrationInterface {
     );
 
     await this.setDefault(queryRunner, 'user', patchedUsers);
+    const damage_group_data = await queryRunner.query(
+      'select * from damage_group',
+    );
+
+    await this.setDefault(
+      queryRunner,
+      'damage_code',
+      damage_code.map((el) => {
+        return {
+          damageGroupId: damage_group_data.find((dg) => dg.code == el.g_code)
+            .id,
+          ..._.omit(el, ['g_code']),
+        };
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
