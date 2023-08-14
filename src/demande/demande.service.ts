@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 import { WebsocketGatewayService } from 'src/websocket-gateway/websocket-gateway.service';
-
+import * as _ from 'lodash';
 @Injectable()
 export class DemandeService {
   constructor(
@@ -27,13 +27,38 @@ export class DemandeService {
     }
   }
 
-  find(query: any) {
+  async find(query: any) {
     try {
       const { relations, ...where } = query;
 
-      return this.demandeRepository.find({
+      const indexNewData = _.isArray(relations)
+        ? relations.indexOf('newData')
+        : Object.keys(relations).indexOf('newData');
+
+      if (indexNewData != -1) {
+        if (_.isArray(relations)) {
+          relations.splice(indexNewData, 1);
+        } else {
+          delete relations.newData;
+        }
+        relations.push('orders');
+      }
+
+      const requests = await this.demandeRepository.find({
         relations: relations,
         where: where || {},
+      });
+
+      if (indexNewData == -1) {
+        return requests;
+      }
+
+      return requests.map((request) => {
+        if (!request?.orders?.length) {
+          request['isNewData'] = true;
+        }
+
+        return _.omit(request, 'orders');
       });
     } catch (err) {
       throw new CustomErrorException(err);

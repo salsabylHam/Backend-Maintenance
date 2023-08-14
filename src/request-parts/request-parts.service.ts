@@ -40,9 +40,18 @@ export class RequestPartsService {
   }
 
   async findAll(query?: any) {
-    return this.requestPartRepository.find({
-      where: query || {},
-    });
+    return this.requestPartRepository
+      .find({
+        where: query || {},
+      })
+      .then((requestedParts) => {
+        return requestedParts.map((part) => {
+          if (part.status == 'Waiting') {
+            part['isNewData'] = true;
+          }
+          return part;
+        });
+      });
   }
 
   remove(id: number) {
