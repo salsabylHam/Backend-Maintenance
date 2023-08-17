@@ -48,7 +48,6 @@
     "ejs": "^3.1.9",
     "exceljs": "^4.3.0",
     "express-basic-auth": "^1.2.1",
-    "googleapis": "^123.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "multer-s3": "^3.0.1",
