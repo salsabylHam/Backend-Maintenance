@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { orderBodyDto } from './dto/create-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateOrderTransaction } from './transaction/order.transaction';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
 import * as _ from 'lodash';
@@ -21,27 +20,20 @@ export class OrderService {
     private readonly webSocketGatewayService: WebsocketGatewayService,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: orderBodyDto) {
     try {
-      const order = await this.createOrderTransaction.run(createOrderDto);
-
+      await this.createOrderTransaction.run(createOrderDto);
       this.webSocketGatewayService.emitEventWithWS(
         'updateNotificationBadges',
         true,
       );
-      return this.find({
-        id: order.orderId,
-        relations: {
-          orderTechnician: true,
-          demande: true,
-        },
-      });
+      return { status: 'success' };
     } catch (error) {
       throw new CustomErrorException(error);
     }
   }
 
-  find(query, user?: any) {
+  async find(query, user?: any) {
     try {
       const { relations, ...where } = query;
       if (where.myOrders) {
@@ -53,77 +45,37 @@ export class OrderService {
 
         delete where.myOrders;
       }
-      return this.orderRepository.find({
+      const orders = await this.orderRepository.find({
         relations: relations ?? [],
         where: where || {},
       });
+
+      if (!where.myOrders) {
+        const resOrders = [];
+
+        const groupedOrders = orders.reduce((res, order) => {
+          if (order.chainCode) {
+            res[order.chainCode] = res[order.chainCode] || [];
+            res[order.chainCode].push(order);
+          } else {
+            res[order.id] = order;
+          }
+          return res;
+        }, {});
+
+        Object.values(groupedOrders).forEach((group) => {
+          if (_.isArray(group)) {
+            const sortedGroup = _.sortBy(group, 'stepIndex');
+            resOrders.push({ ...sortedGroup.shift(), steps: sortedGroup });
+          } else {
+            resOrders.push(group);
+          }
+        });
+        return resOrders;
+      }
+      return orders;
     } catch (error) {
       throw new CustomErrorException(error);
-    }
-  }
-
-  async update(id: number, updateOrderDto: UpdateOrderDto) {
-    try {
-      const queries = [];
-      const order = await this.orderRepository.find({
-        relations: ['orderTechnician'],
-        where: { id },
-      });
-
-      if (!order.length) {
-        throw new CustomErrorException({
-          status: 404,
-          message: `No order found with id ${id}`,
-        });
-      }
-
-      if (updateOrderDto.orderTechnician) {
-        queries.push(
-          this.orderTechnicianRepository.save(
-            updateOrderDto.orderTechnician
-              .filter(
-                (orderT) =>
-                  !order[0].orderTechnician.find((el) => el.orderId == orderT),
-              )
-              .map((technichan) => {
-                return {
-                  orderId: id,
-                  userId: technichan,
-                } as any;
-              }),
-          ),
-        );
-        queries.push(
-          this.orderTechnicianRepository.delete({
-            id: In(
-              order[0].orderTechnician
-                .filter(
-                  (orderT) =>
-                    !updateOrderDto.orderTechnician.find(
-                      (el) => el == orderT.userId,
-                    ),
-                )
-                .map((orderT) => orderT.userId),
-            ),
-          }),
-        );
-      }
-
-      queries.push(
-        this.orderRepository.save({
-          ..._.omit(updateOrderDto, ['orderTechnician']),
-          id,
-        }),
-      );
-
-      this.webSocketGatewayService.emitEventWithWS(
-        'updateNotificationBadges',
-        true,
-      );
-
-      return await Promise.all(queries)[2];
-    } catch (err) {
-      throw new CustomErrorException(err);
     }
   }
 

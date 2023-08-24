@@ -32,6 +32,12 @@ export class Order {
   @Column()
   startDate: string;
 
+  @Column()
+  chainCode: string;
+
+  @Column()
+  chainIndex: number;
+
   @Column({ nullable: true })
   endDate: string;
 
