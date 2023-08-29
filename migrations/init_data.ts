@@ -1,7 +1,7 @@
 export const permissions = [
   {
-    label: 'Technician',
-    code: 'TECHNICIAN',
+    label: 'User',
+    code: 'USER',
   },
   {
     label: 'Team',
