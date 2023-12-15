@@ -13,6 +13,10 @@ export class CreateOrderDto {
 
   @IsNumber()
   @IsOptional()
+  contractId: number;
+
+  @IsNumber()
+  @IsOptional()
   createOrderBefore: number;
 
   @IsNumber({}, { each: true })

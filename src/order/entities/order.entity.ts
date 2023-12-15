@@ -1,3 +1,4 @@
+import { Contract } from 'src/contract/entities/contract.entity';
 import { Demande } from 'src/demande/entities/demande.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
@@ -62,11 +63,18 @@ export class Order {
   @Column({ type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   machineId: number;
 
   @Column({ nullable: true })
   duration: number;
+
+  @Column({ nullable: true })
+  contractId: number;
+
+  @ManyToOne(() => Contract, (contract) => contract.orders)
+  @JoinColumn({ name: 'contractId' })
+  contract: Contract;
 
   @ManyToOne(() => Machine)
   @JoinColumn({ name: 'machineId' })
