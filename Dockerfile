@@ -41,14 +41,12 @@ USER node
 ###################
 
 FROM node:18-alpine As production
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    &&  python3 -m venv /path/to/venv \
-    && . /path/to/venv/bin/activate \
-    && pip3 install --upgrade pip \
-    && pip3 --no-cache-dir install --upgrade awscli \
-    && rm -rf /var/cache/apk/*
+RUN apk update \
+    && apk --no-cache add curl \
+    && apk --no-cache add unzip \
+    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install
 
 RUN aws --version
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
