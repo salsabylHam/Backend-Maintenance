@@ -48,7 +48,7 @@ RUN apk update \
     && unzip awscliv2.zip \
     && ./aws/install
 
-RUN aws --version
+RUN /usr/local/bin/aws --version
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
