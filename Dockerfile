@@ -42,11 +42,11 @@ USER node
 
 FROM node:18-alpine As production
 RUN apk update \
-    && apk --no-cache add curl \
-    && apk --no-cache add unzip \
-    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
+    && apk --no-cache add curl unzip \
+    && /usr/bin/curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && /usr/bin/unzip awscliv2.zip \
     && ./aws/install --bin-dir /usr/local/bin \
+    && ls -l /usr/local/bin \
     && /usr/local/bin/aws --version
 
 
