@@ -41,14 +41,9 @@ USER node
 ###################
 
 FROM node:18-alpine As production
-RUN apk update && apk --no-cache add curl unzip jq
+RUN apk update && apk add --no-cache aws-cli
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && aws/install \
-    && rm -rf awscliv2.zip
-
-RUN /usr/local/bin/aws --version
+RUN aws --version
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
