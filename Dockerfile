@@ -46,7 +46,9 @@ RUN apk update \
     && apk --no-cache add unzip \
     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \
-    && ./aws/install
+    && ./aws/install --bin-dir /usr/local/bin \
+    && /usr/local/bin/aws --version
+
 
 RUN /usr/local/bin/aws --version
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
