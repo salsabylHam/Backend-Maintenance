@@ -17,7 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           synchronize: true,
           autoLoadEntities: true,
           migrationsRun: true,
-          //logging: 'all',
+          // logging: 'all',
         };
       },
       inject: [ConfigService],
