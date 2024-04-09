@@ -33,10 +33,10 @@ export class Order {
   @Column()
   startDate: string;
 
-  @Column({ nullable: null, default: null })
+  @Column({ nullable: true })
   chainCode: string;
 
-  @Column({ nullable: null, default: null })
+  @Column({ nullable: true })
   chainIndex: number;
 
   @Column({ nullable: true })
