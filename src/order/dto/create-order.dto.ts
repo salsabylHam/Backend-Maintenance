@@ -1,3 +1,4 @@
+import { ValidateNested } from '@nestjs/class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
@@ -9,6 +10,10 @@ export class CreateOrderDto {
   @IsNumber()
   @IsOptional()
   demandeId: number;
+
+  @IsNumber()
+  @IsOptional()
+  contractId: number;
 
   @IsNumber()
   @IsOptional()
@@ -57,4 +62,11 @@ export class CreateOrderDto {
   @IsNumber()
   @IsOptional()
   machineId: number;
+}
+
+export class orderBodyDto extends CreateOrderDto {
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderDto)
+  @IsOptional()
+  steps: CreateOrderDto[];
 }

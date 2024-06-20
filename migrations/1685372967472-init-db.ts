@@ -151,6 +151,8 @@ export class initDb1685372967472 implements MigrationInterface {
       \`note\` text NOT NULL,
       \`description\` text NOT NULL,
       \`machineId\` int NOT NULL,
+      \`chainCode\` varchar(255) DEFAULT NULL,
+      \`chainIndex\` int DEFAULT NULL,
       \`occurrence\` enum('Once','Weekly','Monthly','Yearly') NOT NULL DEFAULT 'Once',
       \`createOrderBefore\` int DEFAULT NULL,
       \`orderId\` int DEFAULT NULL,

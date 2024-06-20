@@ -26,7 +26,8 @@ import { TaskSchedulingModule } from './task-scheduling/task-scheduling.module';
 import { WebsocketGatewayModule } from './websocket-gateway/websocket-gateway.module';
 import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 import { StatistiquesModule } from './statistiques/statistiques.module';
-
+import { ContractModule } from './contract/contract.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -55,6 +56,8 @@ import { StatistiquesModule } from './statistiques/statistiques.module';
     WebsocketGatewayModule,
     TimeTrackingModule,
     StatistiquesModule,
+    ContractModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
