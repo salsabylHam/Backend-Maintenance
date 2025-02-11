@@ -1,4 +1,4 @@
-name: Deploying to ECR
+name: Build & Push to ECR
 
 on:
   push:
@@ -7,52 +7,37 @@ on:
 
 jobs:
   build:
-    name: Build Image & push
-    permissions:
-      contents: read
-      id-token: write
+    name: Build Image & push to ECR
     runs-on: ubuntu-latest
+
     steps:
     
+    # Étape 1 : Checkout le code source du dépôt
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Étape 2 : Configurer les identifiants AWS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
-        
+        aws-region: ${{ secrets.AWS_REGION }}   # Utiliser la région AWS configurée dans les secrets GitHub
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Utiliser les clés d'accès AWS configurées dans les secrets
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Clé secrète AWS dans les secrets
+
+    # Étape 3 : Connexion à Amazon ECR
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
+    # Étape 4 : Construire, taguer et pousser l'image vers ECR
     - name: Build, tag, and push image to Amazon ECR
-      id: build-image
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: repo-maintenance-backend
-        IMAGE_TAG: latest
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  # Récupérer l'URL du registre ECR
+        ECR_REPOSITORY: mon-depot-ecr  # Nom de ton dépôt ECR
+        IMAGE_TAG: latest  # Tag pour l'image
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push  $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-    - name: Download task definition
-      run: |
-        aws ecs describe-task-definition --task-definition maintenance-backend --query taskDefinition > task-definition.json
-
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: task-definition.json
-        container-name: maintenance-backend
-        image: ${{ steps.build-image.outputs.image }}
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ecs-maintenance-backend
-        cluster: ecs-cluster-maintenance
-        wait-for-service-stability: true
+        # Construire l'image Docker
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        
+        # Pousser l'image dans ECR
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
