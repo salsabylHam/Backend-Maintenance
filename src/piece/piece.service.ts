@@ -5,6 +5,7 @@ import { Piece } from './entities/piece.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 
 @Injectable()
 export class PieceService {
@@ -12,9 +13,12 @@ export class PieceService {
     @InjectRepository(Piece)
     private pieceRepository: Repository<Piece>,
   ) {}
-  create(createPieceDto: CreatePieceDto) {
+  async create(createPieceDto: CreatePieceDto, enterpriseId: number) {
     try {
-      return this.pieceRepository.save(createPieceDto);
+      return   await this.pieceRepository.save({
+        ...createPieceDto,
+        enterprise: { id: enterpriseId },
+      });
     } catch (error) {
       throw new CustomErrorException(error);
     }
@@ -25,7 +29,7 @@ export class PieceService {
       const { relations, ...where } = query;
       return await this.pieceRepository.find({
         relations: relations,
-        where: where || {},
+        where: where || {},   
       });
     } catch (error) {
       throw new CustomErrorException(error);

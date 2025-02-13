@@ -4,7 +4,7 @@ import { Demande } from 'src/demande/entities/demande.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
 import { Piece } from 'src/piece/entities/piece.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class File {
@@ -16,6 +16,11 @@ export class File {
 
   @Column()
   path: string;
+  @Column()
+  type: string;
+
+  @Column()
+  size: number
 
   @Column({ nullable: true })
   requestId: number;
@@ -55,11 +60,12 @@ export class File {
 
   @ManyToOne(() => Client, (client) => client.files, {
     onDelete: 'CASCADE',
-    orphanedRowAction: 'delete',
   })
+  @JoinColumn()
   client: Client;
 
   @ManyToOne(() => Contract, (contract) => contract.files, {
+
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
   })

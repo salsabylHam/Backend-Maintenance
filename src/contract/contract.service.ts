@@ -11,11 +11,16 @@ export class ContractService {
   constructor(
     @InjectRepository(Contract)
     private contractRepository: Repository<Contract>,
-  ) {}
+  ) { }
 
-  create(createContractDto: CreateContractDto) {
+  create(createContractDto: CreateContractDto, enterpriseId: number) {
     try {
-      return this.contractRepository.save(createContractDto);
+      return this.contractRepository.save({
+        ...createContractDto,
+        enterprise: {
+          id: enterpriseId
+        }
+      });
     } catch (err) {
       throw new CustomErrorException(err);
     }
@@ -23,11 +28,10 @@ export class ContractService {
 
   findAll(query: any) {
     try {
+      console.log(query)
       const { relations, ...where } = query;
       return this.contractRepository.find({
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
+        relations: relations,
         where: where || {},
       });
     } catch (err) {
@@ -35,22 +39,22 @@ export class ContractService {
     }
   }
 
-  async update(id: number, updateContractDto: UpdateContractDto) {
+  async update(query: any, updateContractDto: UpdateContractDto) {
     try {
-      const contract = await this.contractRepository.findOneBy({ id });
+      const contract = await this.contractRepository.findOneBy(query);
       if (!contract) {
         throw new CustomErrorException({
           status: 404,
-          message: `No contract found with id ${id}`,
+          message: `No contract found with querry ${query}`,
         });
       }
-      return this.contractRepository.update(id, updateContractDto);
+      return this.contractRepository.update(query, updateContractDto);
     } catch (err) {
       throw new CustomErrorException(err);
     }
   }
 
-  remove(id: number) {
-    return this.contractRepository.delete(id);
+  remove(query: any) {
+    return this.contractRepository.delete(query);
   }
 }

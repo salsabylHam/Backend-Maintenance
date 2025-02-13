@@ -5,30 +5,44 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from './entities/client.entity';
 import { Repository } from 'typeorm';
 import { CustomErrorException } from 'src/shared/errors/custom-error.exception';
+import { File } from 'src/files/entities/file.entity';
 
 @Injectable()
 export class ClientService {
   constructor(
     @InjectRepository(Client)
     private clientRepository: Repository<Client>,
-  ) {}
+  ) { }
 
-  create(createClientDto: CreateClientDto) {
+  async create(createClientDto: CreateClientDto, enterpriseId: number) {
     try {
-      return this.clientRepository.save(createClientDto);
+      const logo = createClientDto.logo
+      delete createClientDto.logo
+      createClientDto.files.push(logo)
+      const client = await this.clientRepository.save({
+        ...createClientDto, enterprise: {
+          id: enterpriseId
+        }
+      })
+      const logoData = (client.files as File[]).find((file: File) => (file.name == logo.name && file.path == logo.path))
+      await this.clientRepository.update({ id: client.id }, { logo: logoData.id });
+      client.logo = logoData.id
+      return client
     } catch (err) {
       throw new CustomErrorException(err);
     }
   }
 
-  findAll(query: any) {
+  findAll(query: any, enterpriseId: number) {
     try {
       const { relations, ...where } = query;
       return this.clientRepository.find({
-        relations: !!relations
-          ? Object.keys(relations).reduce((a, v) => ({ ...a, [v]: true }), {})
-          : {},
-        where: where || {},
+        relations: relations,
+        where: (where || {}) && {
+          enterprise: {
+            id: enterpriseId
+          }
+        },
       });
     } catch (err) {
       throw new CustomErrorException(err);

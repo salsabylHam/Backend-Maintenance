@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateMachineDto {
   @ApiProperty()
@@ -13,8 +13,16 @@ export class CreateMachineDto {
   @ApiProperty()
   @IsOptional()
   files: any;
-
+  
   @ApiProperty()
   @IsOptional()
   pieces: any[];
+
+  @ApiProperty()
+  @IsNumber()
+  quantity: number;
+
+  @ApiProperty()
+  @IsNumber()
+  price: number;
 }

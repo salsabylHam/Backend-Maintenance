@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -38,5 +39,15 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @Get('statistique/count')
+  count(@Req() req) {
+    return this.usersService.count(req.user.enterprise.code);
+  }
+
+  @Get('statistique/increase-rate')
+  increaseRate(@Req() req) {
+    return this.usersService.increaseRate(req.user.enterprise.code);
   }
 }

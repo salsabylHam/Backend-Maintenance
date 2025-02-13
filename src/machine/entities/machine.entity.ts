@@ -1,4 +1,5 @@
 import { Demande } from 'src/demande/entities/demande.entity';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 import { File } from 'src/files/entities/file.entity';
 import { Piece } from 'src/piece/entities/piece.entity';
 import {
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -20,7 +22,13 @@ export class Machine {
 
   @Column()
   description: string;
+  
+  @Column()
+  quantity: number;
 
+  @Column()
+  price: number;
+  
   @OneToMany(() => Demande, (demande) => demande.machine)
   demandes: Demande[];
 
@@ -39,4 +47,7 @@ export class Machine {
     orphanedRowAction: 'delete',
   })
   files: File[];
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.machines)
+  enterprise: Enterprise;
 }

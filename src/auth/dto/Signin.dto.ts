@@ -5,4 +5,6 @@ export class SigninDTO {
   password: string;
   @IsString()
   email: string;
+  @IsString()
+  enterpriseCode: string;
 }

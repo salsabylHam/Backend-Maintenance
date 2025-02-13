@@ -1,3 +1,4 @@
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 import { File } from 'src/files/entities/file.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { OrderTechnicianPieces } from 'src/order-technician-pieces/entities/order-technician-pieces.entity';
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -51,4 +53,7 @@ export class Piece {
     },
   )
   orderTechnicianPieces: OrderTechnicianPieces[];
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.pieces)
+  enterprise: Enterprise;
 }

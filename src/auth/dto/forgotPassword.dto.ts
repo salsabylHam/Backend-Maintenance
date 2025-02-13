@@ -5,4 +5,8 @@ export class ForgotPasswordDto {
   @IsEmail()
   @IsString()
   email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  enterpriseCode: string;
 }

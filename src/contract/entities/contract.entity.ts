@@ -1,4 +1,5 @@
 import { Client } from 'src/client/entities/client.entity';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 import { File } from 'src/files/entities/file.entity';
 import { Order } from 'src/order/entities/order.entity';
 import {
@@ -45,4 +46,7 @@ export class Contract {
     orphanedRowAction: 'delete',
   })
   files: File[];
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.contracts)
+  enterprise: Enterprise
 }

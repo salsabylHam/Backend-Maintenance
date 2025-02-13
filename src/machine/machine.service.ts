@@ -13,9 +13,14 @@ export class MachineService {
     private readonly machineRepository: Repository<Machine>,
   ) {}
 
-  create(createMachineDto: CreateMachineDto) {
+  create(createMachineDto: CreateMachineDto, enterpriseId: number) {
     try {
-      return this.machineRepository.save(createMachineDto);
+      return this.machineRepository.save({
+        ...createMachineDto,
+        enterprise: {
+          id: enterpriseId,
+        },
+      });
     } catch (err) {
       throw new CustomErrorException(err);
     }
@@ -50,6 +55,18 @@ export class MachineService {
   }
 
   remove(id: number) {
+    // TODO: fix cascade delete
+    // TODO: missing the enterprise check
     return this.machineRepository.delete({ id });
+  }
+
+  count(code: string) {
+    return this.machineRepository.count({
+      where: {
+        enterprise: {
+          code: code,
+        },
+      },
+    });
   }
 }

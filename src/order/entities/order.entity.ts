@@ -1,5 +1,6 @@
 import { Contract } from 'src/contract/entities/contract.entity';
 import { Demande } from 'src/demande/entities/demande.entity';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { OrderTechnician } from 'src/order_technicians/entities/order_technician.entity';
 import { RequestPart } from 'src/request-parts/entities/request-part.entity';
@@ -8,11 +9,13 @@ import { OCCURRENCE } from 'src/shared/enums/occurrence.enum';
 import { PRIORITY } from 'src/shared/enums/priority.enums';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -99,4 +102,13 @@ export class Order {
   })
   @JoinColumn({ name: 'orderId' })
   parentOrder: Order;
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.orders)
+  enterprise: Enterprise;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }

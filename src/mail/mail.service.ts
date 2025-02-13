@@ -27,7 +27,11 @@ export class MailService {
     }
   }
 
-  async sendUserForgotPasswordUrl(user: User, token: string) {
+  async sendUserForgotPasswordUrl(
+    user: User,
+    token: string,
+    subject: string = 'Reset password',
+  ) {
     try {
       const url = `${this.configService.get(
         'ALLOWED_ORIGIN',
@@ -40,7 +44,7 @@ export class MailService {
             Destination: { ToAddresses: [user.email] },
             Content: {
               Simple: {
-                Subject: { Data: 'Reset password' },
+                Subject: { Data: subject },
                 Body: {
                   Html: {
                     Data: await ejs.renderFile(

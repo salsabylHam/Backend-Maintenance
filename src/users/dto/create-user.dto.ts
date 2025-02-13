@@ -49,12 +49,12 @@ export class CreateUserDto {
   @ApiProperty()
   @IsOptional()
   @IsPhoneNumber()
-  phone2: string;
+  phone2?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  picture: string;
+  picture?: string;
 
   @ApiProperty()
   @IsOptional()

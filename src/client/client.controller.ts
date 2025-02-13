@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -19,16 +20,16 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('clients')
 @UseGuards(AuthGuard('jwt'))
 export class ClientController {
-  constructor(private readonly clientService: ClientService) {}
+  constructor(private readonly clientService: ClientService) { }
 
   @Post()
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientService.create(createClientDto);
+  create(@Body() createClientDto: CreateClientDto, @Req() req: any) {
+    return this.clientService.create(createClientDto, req.user.enterprise.id);
   }
 
   @Get()
-  findAll(@Query() query) {
-    return this.clientService.findAll(query);
+  findAll(@Query() query, @Req() req: any) {
+    return this.clientService.findAll(query,req.user.enterprise.id);
   }
 
   @Put(':id')

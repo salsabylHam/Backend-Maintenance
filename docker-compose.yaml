@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   maintenance:
@@ -9,13 +8,15 @@ services:
       dockerfile: ./Dockerfile
     command: npm run start:dev
     environment:
+      SWAGGER_USER: root
+      SWAGGER_PASSWORD: root
       DB_HOST: mysqldb
       DB_USERNAME: root
       DB_PASSWORD: root
       DB_NAME: maintenance_db
       DB_PORT: 3306
       JWT_SECRET: "#earea@ererazed1515"
-      ALLOWED_ORIGIN: http://localhost:5173
+      ALLOWED_ORIGIN: "*"
       SES_ISLOCAL: true
       SES_HOST: http://ses:8005
       SES_REGION: aws-ses-v2-local
@@ -86,6 +87,8 @@ services:
       MINIO_ROOT_USER: root
       MINIO_ROOT_PASSWORD: root@root
     command: server /data --console-address :9001
+    networks:
+      - maintenance-network
   createbucket:
     image: minio/mc:latest
     depends_on:
@@ -98,7 +101,8 @@ services:
       - |
         /usr/bin/mc config host add --api s3v4 s3 http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}
         /usr/bin/mc mb s3/maintenance/
-      
+    networks:
+      - maintenance-network
   adminer:
     image: adminer
     container_name: adminer

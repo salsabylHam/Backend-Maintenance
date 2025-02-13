@@ -1,6 +1,7 @@
 import { Contract } from 'src/contract/entities/contract.entity';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 import { File } from 'src/files/entities/file.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Client {
@@ -10,11 +11,12 @@ export class Client {
   @Column({ unique: true })
   name: string;
 
-  @Column()
-  type: string;
+  @Column("simple-array")
+  type: string[];
 
-  @Column()
-  logo: string;
+  // id of the file in files
+  @Column({ nullable: true })
+  logo: number;
 
   @Column()
   description: string;
@@ -33,7 +35,9 @@ export class Client {
 
   @OneToMany(() => File, (file) => file.client, {
     cascade: true,
-    orphanedRowAction: 'delete',
   })
   files: File[];
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.clients)
+  enterprise: Enterprise
 }

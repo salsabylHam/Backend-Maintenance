@@ -44,4 +44,25 @@ export class DemandeController {
   remove(@Param('id') id: string) {
     return this.demandeService.remove(+id);
   }
+
+  @Get('statistique/count')
+  count(@Req() req: any) {
+    return this.demandeService.count(req.user.enterprise.code);
+  }
+
+  @Get('statistique/machine-down-rate')
+  machineDownRate(@Req() req: any) {
+    return this.demandeService.machineDownRate(req.user.enterprise.code);
+  }
+
+  @Get('statistique/increase-rate')
+  increaseRate(@Req() req: any) {
+    return this.demandeService.increaseRate(req.user.enterprise.code);
+  }
+
+  @Get('statistique/by-priority')
+  rateByPriority(@Req() req: any) {
+    return this.demandeService.rateByPriority(req.user.enterprise.code);
+  }
+
 }

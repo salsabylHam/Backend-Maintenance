@@ -28,6 +28,8 @@ import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 import { StatistiquesModule } from './statistiques/statistiques.module';
 import { ContractModule } from './contract/contract.module';
 import { ClientModule } from './client/client.module';
+import { EnterpriseModule } from './enterprise/enterprise.module';
+import { AuthConfigModule } from './auth-config/auth-config.module';
 
 @Module({
   imports: [
@@ -58,6 +60,8 @@ import { ClientModule } from './client/client.module';
     StatistiquesModule,
     ContractModule,
     ClientModule,
+    EnterpriseModule,
+    AuthConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

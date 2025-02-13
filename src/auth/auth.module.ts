@@ -7,9 +7,14 @@ import { JwtStrategy } from './stratgies/jwt.strategy';
 import { AuthController } from './auth.controller';
 import { UsersModule } from 'src/users/users.module';
 import { MailModule } from 'src/mail/mail.module';
+import { EnterpriseModule } from 'src/enterprise/enterprise.module';
+import { RolesModule } from 'src/roles/roles.module';
+import { AuthConfigModule } from 'src/auth-config/auth-config.module';
+import { AuthProviderService } from './auth-provider.service';
 
 @Module({
   imports: [
+    EnterpriseModule,
     MailModule,
     ConfigModule,
     forwardRef(() => UsersModule),
@@ -24,8 +29,10 @@ import { MailModule } from 'src/mail/mail.module';
       },
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    RolesModule,
+    AuthConfigModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, AuthProviderService],
   exports: [JwtModule, JwtStrategy, PassportModule, AuthService],
   controllers: [AuthController],
 })

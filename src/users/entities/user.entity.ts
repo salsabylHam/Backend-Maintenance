@@ -5,6 +5,7 @@ import { Role } from 'src/roles/entities/role.entity';
 import { UserNotification } from 'src/user-notifications/entities/user-notification.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -12,7 +13,9 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 
 @Entity()
 export class User {
@@ -62,6 +65,12 @@ export class User {
   )
   userNotification: UserNotification;
 
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.workers, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'enterpriseId' })
+  enterprise: Enterprise;
+
   @ManyToMany(() => Team, {
     cascade: true,
     onDelete: 'CASCADE',
@@ -71,4 +80,10 @@ export class User {
     name: 'user_team',
   })
   teams: Team[];
+  
+  @CreateDateColumn({name:'created_at'})
+  createdAt: Date;
+
+  @UpdateDateColumn({name:'updated_at'})
+  updatedAt: Date;
 }

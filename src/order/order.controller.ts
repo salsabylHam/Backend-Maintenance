@@ -8,6 +8,7 @@ import {
   Query,
   Request,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { orderBodyDto } from './dto/create-order.dto';
@@ -32,5 +33,15 @@ export class OrderController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
+  }
+
+  @Get('statistique/count')
+  count(@Req() req: any) {
+    return this.orderService.count(req.user.enterprise.code);
+  }
+
+  @Get('statistique/increase-rate')
+  increateRate(@Req() req: any) {
+    return this.orderService.increaseRate(req.user.enterprise.code);
   }
 }

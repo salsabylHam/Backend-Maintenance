@@ -9,11 +9,11 @@ export class ResetPasswordDto {
   @Matches(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   )
-  public password?: string;
+  password: string;
   @IsNotEmpty()
   @Matches(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   )
   @Match(ResetPasswordDto, (obj) => obj.password)
-  public confirmPassword?: string;
+  confirmPassword: string;
 }

@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as basicAuth from 'express-basic-auth';
-
+import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
@@ -14,7 +14,9 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-
+  app.use(
+    cookieParser('Coockie_secret')
+  )
   if (process.env.ENV != 'prod' && process.env.ENV != 'production') {
     app.use(
       ['/api/v1/docs'],

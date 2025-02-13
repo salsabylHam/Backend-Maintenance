@@ -1,4 +1,5 @@
 import { DamageCode } from 'src/damage-code/entities/damage-code.entity';
+import { Enterprise } from 'src/enterprise/entities/enterprise.entity';
 import { File } from 'src/files/entities/file.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 import { Order } from 'src/order/entities/order.entity';
@@ -79,4 +80,7 @@ export class Demande {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.demands)
+  enterprise: Enterprise;
 }

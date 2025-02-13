@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { MachineService } from './machine.service';
 import { CreateMachineDto } from './dto/create-machine.dto';
@@ -18,16 +19,21 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('machine')
 @UseGuards(AuthGuard('jwt'))
 export class MachineController {
-  constructor(private readonly machineService: MachineService) {}
+  constructor(private readonly machineService: MachineService) { }
 
   @Post()
-  create(@Body() createMachineDto: CreateMachineDto) {
-    return this.machineService.create(createMachineDto);
+  create(@Req() req, @Body() createMachineDto: CreateMachineDto) {
+    return this.machineService.create(createMachineDto, req.user.enterprise.id);
   }
 
   @Get()
-  find(@Query() query) {
-    return this.machineService.find(query);
+  find(@Query() query, @Req() req,) {
+    const { relations, ...where } = query;
+    return this.machineService.find({
+      ...where,
+      enterprise: { id: req.user.enterprise.id },
+      relations
+    });
   }
 
   @Patch(':id')
@@ -38,5 +44,10 @@ export class MachineController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.machineService.remove(+id);
+  }
+
+  @Get('statistique/count')
+  count(@Req() req: any) {
+    return this.machineService.count(req.user.enterprise.code);
   }
 }

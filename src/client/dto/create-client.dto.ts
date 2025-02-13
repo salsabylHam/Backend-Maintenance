@@ -9,8 +9,8 @@ export class CreateClientDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  type: string;
+  @IsString({ each: true })
+  type: string[];
 
   @ApiProperty()
   @IsNotEmpty()
@@ -31,9 +31,8 @@ export class CreateClientDto {
   personnel: string;
 
   @ApiProperty()
-  @IsString()
-  @IsOptional()
-  logo: string;
+  @IsNotEmpty()
+  logo: any;
 
   @ApiProperty()
   @IsOptional()

@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PieceService } from './piece.service';
 import { CreatePieceDto } from './dto/create-piece.dto';
@@ -21,13 +22,21 @@ export class PieceController {
   constructor(private readonly pieceService: PieceService) {}
 
   @Post()
-  create(@Body() createPieceDto: CreatePieceDto) {
-    return this.pieceService.create(createPieceDto);
+  create(@Req() req, @Body() createPieceDto: CreatePieceDto) {
+    return this.pieceService.create(createPieceDto, req.user.enterprise.id);
   }
 
   @Get()
-  findAll(@Query() query) {
-    return this.pieceService.find(query);
+  findAll(@Query() query, @Req() req) {
+    const { relations, ...where } = query;
+    console.log(where);
+    return this.pieceService.find({
+      ...where,
+      enterprise: {
+        code: req.user.enterprise.code,
+      },
+      relations: [...(relations ? relations : []), 'enterprise'],
+    });
   }
 
   @Patch(':id')
