@@ -1,4 +1,4 @@
-name: Build & Push to ECR
+name: Build & Push Backend to ECR
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build Image & push to ECR
+    name: Build Backend Image & push to ECR
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +20,9 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: ${{ secrets.AWS_REGION }}   # Utiliser la région AWS configurée dans les secrets GitHub
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Utiliser les clés d'accès AWS configurées dans les secrets
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Clé secrète AWS dans les secrets
+        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     # Étape 3 : Connexion à Amazon ECR
     - name: Login to Amazon ECR
@@ -32,11 +32,11 @@ jobs:
     # Étape 4 : Construire, taguer et pousser l'image vers ECR
     - name: Build, tag, and push image to Amazon ECR
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  # Récupérer l'URL du registre ECR
-        ECR_REPOSITORY: frontend-repo  # Nom de ton dépôt ECR
-        IMAGE_TAG: latest  # Tag pour l'image
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: back-app  # NOM DU REPO ECR POUR LE BACKEND
+        IMAGE_TAG: latest
       run: |
-        # Construire l'image Docker
+        # Construire l'image Docker (ajouter "-f backend/Dockerfile" si nécessaire)
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         
         # Pousser l'image dans ECR
