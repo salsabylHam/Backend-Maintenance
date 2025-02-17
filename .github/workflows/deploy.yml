@@ -5,6 +5,7 @@ on:
     branches:
       - main  # Déclencheur lorsque la branche `main` est mise à jour
 
+       
 jobs:
   build:
     name: Build Backend Image & push to ECR
@@ -43,3 +44,4 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         # Pousser l'image vers ECR avec tous les tags
         docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
+
