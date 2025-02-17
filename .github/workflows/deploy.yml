@@ -43,3 +43,5 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         # Push the image to ECR with all tags
         docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
+
+        
