@@ -45,3 +45,4 @@ jobs:
         # Pousser l'image vers ECR avec tous les tags
         docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
 
+    
