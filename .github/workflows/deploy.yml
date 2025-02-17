@@ -5,26 +5,27 @@ on:
     branches:
       - main
 
-      
-
 jobs:
   build:
     name: Build Backend Image & push to ECR
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write  # Permet d'utiliser OIDC
+      contents: read 
+
     steps:
     
-    # Étape 1 : Checkout le code source du dépôt
+    # Étape 1 : Checkout le code source
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Étape 2 : Configurer les identifiants AWS
-    - name: Configure AWS credentials
+    # Étape 2 : Assumer le rôle AWS via OIDC
+    - name: Configure AWS credentials (OIDC)
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: ${{ secrets.AWS_REGION }}
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-3
+        role-to-assume: arn:aws:iam::380426548948:role/backend-app-GitHubActionsOIDCRole
 
     # Étape 3 : Connexion à Amazon ECR
     - name: Login to Amazon ECR
@@ -35,11 +36,8 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: back-app  # NOM DU REPO ECR POUR LE BACKEND
+        ECR_REPOSITORY: backend-app  # Dépôt ECR mis à jour
         IMAGE_TAG: latest
       run: |
-        # Construire l'image Docker (ajouter "-f backend/Dockerfile" si nécessaire)
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        
-        # Pousser l'image dans ECR
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
