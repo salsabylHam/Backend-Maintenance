@@ -15,7 +15,6 @@ jobs:
       contents: read  # Allows reading the source code
 
     steps:
-    
     # Step 1: Checkout the source code
     - name: Checkout code
       uses: actions/checkout@v3
@@ -27,7 +26,7 @@ jobs:
         aws-region: eu-west-3
         role-to-assume: arn:aws:iam::380426548948:role/backend-app-new-GitHubActionsOIDCRole  # Updated role ARN for backend
 
-    # Step 3: Update IAM Policy (Add InitiateLayerUpload)
+    # Step 3: Update IAM Policy to include InitiateLayerUpload
     - name: Update IAM Policy to include InitiateLayerUpload
       run: |
         aws iam create-policy-version \
