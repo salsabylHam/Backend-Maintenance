@@ -35,7 +35,7 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: backend-app  # Backend ECR repository
+        ECR_REPOSITORY: backend-app-new  # Backend ECR repository
         IMAGE_TAG: latest  # Tag for the latest version
       run: |
         # Build the Docker image with a tag based on commit SHA and the 'latest' tag
