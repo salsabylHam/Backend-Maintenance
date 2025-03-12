@@ -20,7 +20,7 @@ USER node
 
 FROM node:18-alpine AS build
 
-ENV NODE_ENV production
+ENV NODE_ENV dev
 
 WORKDIR /usr/src/app
 
