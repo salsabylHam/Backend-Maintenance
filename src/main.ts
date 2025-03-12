@@ -17,6 +17,26 @@ async function bootstrap() {
   app.use(
     cookieParser('Coockie_secret')
   )
+  app.use(
+    ['/api/v1/docs'],
+    basicAuth({
+      challenge: true,
+      users: {
+        [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+      },
+    }),
+  );
+  
+  const config = new DocumentBuilder()
+    .setTitle('Maintenance')
+    .setDescription('The maintenance API description')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .addTag('Maintenance')
+    .build();
+  
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/v1/docs', app, document);
   
 
   await app.listen(4000);
