@@ -26,7 +26,6 @@ async function bootstrap() {
       },
     }),
   );
-  
   const config = new DocumentBuilder()
     .setTitle('Maintenance')
     .setDescription('The maintenance API description')
@@ -34,7 +33,6 @@ async function bootstrap() {
     .addBearerAuth()
     .addTag('Maintenance')
     .build();
-  
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
   
